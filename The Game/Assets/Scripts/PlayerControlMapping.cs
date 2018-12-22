@@ -7,7 +7,8 @@ public class PlayerControlMapping : MonoBehaviour
     public float xMove;  //Horizontal movement
     public float yMove;
 
-    public bool jump;
+    public bool jumpOn;
+    public bool jumpOff;
     public bool run;
     public bool useItem;
     public bool attack1;
@@ -22,7 +23,8 @@ public class PlayerControlMapping : MonoBehaviour
         playerPosition = transform.position;
         xMove = Input.GetAxisRaw("Horizontal");
         yMove = Input.GetAxis("Vertical");
-        jump = Input.GetKeyDown(KeyCode.Space);
+        jumpOn = Input.GetKeyDown(KeyCode.Space);
+        jumpOff = Input.GetKeyUp(KeyCode.Space);
         run = Input.GetKey(KeyCode.LeftShift);
         useItem = Input.GetKeyDown(KeyCode.E);
         attack1 = Input.GetKey(KeyCode.Mouse0);
@@ -37,7 +39,8 @@ public class PlayerControlMapping : MonoBehaviour
           playerPosition = transform.position;
           xMove = Input.GetAxisRaw("Horizontal");
           yMove = Input.GetAxis("Vertical");
-          jump = Input.GetKeyDown(KeyCode.Space);
+          jumpOn = Input.GetKeyDown(KeyCode.Space);
+          jumpOff = Input.GetKeyUp(KeyCode.Space);
           run = Input.GetKey(KeyCode.LeftShift);
           useItem = Input.GetKeyDown(KeyCode.E);
           attack1 = Input.GetKey(KeyCode.Mouse0);

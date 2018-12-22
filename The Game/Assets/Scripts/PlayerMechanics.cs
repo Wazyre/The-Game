@@ -78,7 +78,7 @@ public class PlayerMechanics : MonoBehaviour
             anim.SetBool("isIdle", true);
         }
 
-        if(control.jump && grounded)
+        if(control.jumpOn && grounded)
         {
             if(!inAir)
             {
@@ -89,12 +89,19 @@ public class PlayerMechanics : MonoBehaviour
                 anim.SetBool("isIdle", false);
             }
         }
-        else if(control.jump && inAir)
+        else if(control.jumpOn && inAir)
         {
             inAir = false;
             rb.AddForce(new Vector2(0, smallJumpForce));
             anim.SetBool("isJumping", true);
             anim.SetBool("isIdle", false);
+        }
+        else if (control.jumpOff)
+        {
+            if (rb.velocity.y > 0)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            }
         }
 
         if(control.attack1)
