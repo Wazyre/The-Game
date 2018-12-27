@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 480324}
   - component: {fileID: 19864176}
+  - component: {fileID: 3373909772349354333}
   - component: {fileID: 19955286}
   m_Layer: 0
   m_Name: Hail - Soft
@@ -4564,6 +4565,18 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &3373909772349354333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d46fa98049cea6a45b9ec7ac73c7a39e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!199 &19955286
 ParticleSystemRenderer:
   serializedVersion: 6

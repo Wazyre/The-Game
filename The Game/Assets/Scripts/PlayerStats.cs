@@ -6,35 +6,51 @@ using UnityEngine.UI;
 public class PlayerStats : MonoBehaviour
 {
     public Text healthText;
-    int maxHealth = 100;
-    int currentHealth;
-    int maxMana = 100;
-    int currentMana;
+    public Text diseaseText;
+
+    float maxHealth = 100.0f;
+    float currentHealth;
+    float maxDisease = 100.0f;
+    float currentDisease;
+
     bool onDanger;
+    bool fullDisease;
+
+    Animator anim;
+
+    void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         currentHealth = maxHealth;
-        currentMana = maxMana;
+        currentDisease = 0;
         healthText.text = "";
+        diseaseText.text = "";
         StartCoroutine(StayOnHazard());
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateHealth();
+        UpdateHealthText();
+        UpdateDiseaseText();
         CheckHealth();
-        StartCoroutine(StayOnHazard());
-
+        CheckDisease();
+        //StartCoroutine(StayOnHazard());
+        currentDisease += 0.1f*Time.deltaTime;
+        Debug.Log(currentDisease);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.tag == "Puddle")
         {
-            currentHealth = maxHealth;
+            //currentHealth = maxHealth;
+            currentDisease = 0;
         }
         if(other.gameObject.tag == "Spikes")
         {
@@ -66,9 +82,17 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    void UpdateHealth()
+    void UpdateHealthText()
     {
         healthText.text = "HP: " + currentHealth.ToString();
+    }
+
+    void UpdateDiseaseText()
+    {
+        if(currentDisease%2 == 0)
+        {
+            diseaseText.text = "Disease: " + currentDisease.ToString();
+        }
     }
 
     void CheckHealth()
@@ -80,9 +104,30 @@ public class PlayerStats : MonoBehaviour
         if(currentHealth <= 0)
         {
             currentHealth = 0;
-            //Die();
+            Die();
         }
     }
+
+    void CheckDisease()
+    {
+        if(currentDisease > maxDisease)
+        {
+            currentDisease = maxDisease;
+        }
+        if(currentDisease >= 90)
+        {
+            anim.SetBool("isCrouching", true);
+            anim.SetBool("isIdle", false);
+            anim.SetBool("isRunning", false);
+            fullDisease = true;
+        }
+        if(fullDisease && currentDisease < 90)
+        {
+            anim.SetBool("isCrouching", false);
+            fullDisease = false;
+        }
+    }
+
     void Die()
     {
         Destroy(gameObject);

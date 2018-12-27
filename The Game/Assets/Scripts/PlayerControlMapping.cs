@@ -13,6 +13,7 @@ public class PlayerControlMapping : MonoBehaviour
     public bool useItem;
     public bool attack1;
     public bool attack2;
+    public bool crouch;
     public bool inputting = true;
 
     public Vector3 playerPosition;
@@ -25,10 +26,11 @@ public class PlayerControlMapping : MonoBehaviour
         yMove = Input.GetAxis("Vertical");
         jumpOn = Input.GetKeyDown(KeyCode.Space);
         jumpOff = Input.GetKeyUp(KeyCode.Space);
-        run = Input.GetKey(KeyCode.LeftShift);
+        run = Input.GetKeyDown(KeyCode.LeftShift);
         useItem = Input.GetKeyDown(KeyCode.E);
         attack1 = Input.GetKey(KeyCode.Mouse0);
         attack2 = Input.GetKey(KeyCode.Mouse1);
+        crouch = Input.GetKey(KeyCode.LeftControl);
     }
 
     // Update is called once per frame
@@ -41,10 +43,11 @@ public class PlayerControlMapping : MonoBehaviour
           yMove = Input.GetAxis("Vertical");
           jumpOn = Input.GetKeyDown(KeyCode.Space);
           jumpOff = Input.GetKeyUp(KeyCode.Space);
-          run = Input.GetKey(KeyCode.LeftShift);
+          run = Input.GetKeyDown(KeyCode.LeftShift);
           useItem = Input.GetKeyDown(KeyCode.E);
           attack1 = Input.GetKey(KeyCode.Mouse0);
           attack2 = Input.GetKey(KeyCode.Mouse1);
+          crouch = Input.GetKey(KeyCode.LeftControl);
       }
     }
 
