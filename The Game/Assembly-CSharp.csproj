@@ -61,6 +61,7 @@
      <Compile Include="Assets\Scripts\FadeText.cs" />
      <Compile Include="Assets\Scripts\FirstScene.cs" />
      <Compile Include="Assets\Scripts\FollowPlayer.cs" />
+     <Compile Include="Assets\Scripts\GlobalControl.cs" />
      <Compile Include="Assets\Scripts\Interactable.cs" />
      <Compile Include="Assets\Scripts\LoadLevel.cs" />
      <Compile Include="Assets\Scripts\Parallax.cs" />
@@ -68,8 +69,10 @@
      <Compile Include="Assets\Scripts\PlayerAttacks.cs" />
      <Compile Include="Assets\Scripts\PlayerControlMapping.cs" />
      <Compile Include="Assets\Scripts\PlayerMechanics.cs" />
-     <Compile Include="Assets\Scripts\PlayerStats.cs" />
+     <Compile Include="Assets\Scripts\PlayerState.cs" />
+     <Compile Include="Assets\Scripts\PlayerStatistics.cs" />
      <Compile Include="Assets\Scripts\StopCamera.cs" />
+     <Compile Include="Assets\Scripts\SwitchScenes.cs" />
      <None Include="Assets\Resources\Realistic Hail Set\README.txt" />
      <None Include="Assets\Gothicvania Cemetery Artwork\about.txt" />
      <None Include="Assets\Medieval_pixel_art_asset_FREE\pixel_snapping_README.txt" />
