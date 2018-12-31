@@ -14,9 +14,12 @@ public class PlayerStats : MonoBehaviour
     float currentDisease;
 
     bool onDanger;
-    bool fullDisease;
+    //bool fullDisease;
 
     Animator anim;
+    public Slider healthBar;
+
+    Canvas thisCanvas;
 
     void Awake()
     {
@@ -31,6 +34,7 @@ public class PlayerStats : MonoBehaviour
         healthText.text = "";
         diseaseText.text = "";
         StartCoroutine(StayOnHazard());
+        healthBar.value = CalculateBar();
     }
 
     // Update is called once per frame
@@ -42,7 +46,6 @@ public class PlayerStats : MonoBehaviour
         CheckDisease();
         //StartCoroutine(StayOnHazard());
         currentDisease += 0.1f*Time.deltaTime;
-        Debug.Log(currentDisease);
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -106,6 +109,12 @@ public class PlayerStats : MonoBehaviour
             currentHealth = 0;
             Die();
         }
+        healthBar.value = CalculateBar();
+    }
+
+    float CalculateBar()
+    {
+        return currentHealth / maxHealth;
     }
 
     void CheckDisease()
@@ -119,12 +128,12 @@ public class PlayerStats : MonoBehaviour
             anim.SetBool("isCrouching", true);
             anim.SetBool("isIdle", false);
             anim.SetBool("isRunning", false);
-            fullDisease = true;
+            //fullDisease = true;
         }
-        if(fullDisease && currentDisease < 90)
+        if(currentDisease < 90)
         {
             anim.SetBool("isCrouching", false);
-            fullDisease = false;
+            //fullDisease = false;
         }
     }
 

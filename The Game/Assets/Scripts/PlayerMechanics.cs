@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMechanics : MonoBehaviour
 {
@@ -14,41 +15,59 @@ public class PlayerMechanics : MonoBehaviour
     float hitRange = 2f;
     float tempVelocity;
     float dashDelay = 0.0f;
-
+    float interactRadius = 15f;
+    float groundCheckDis = 0.11f; //Distane to check for ground
     bool grounded = true;
     bool inAir = false;
     bool crouching = false;
     bool flipCol = true;
 
-    GameObject player;
+    //GameObject player;
+    GameObject cam;
+    GameObject temp; //To hold a text gameobject
     Transform groundCheck;
 
-    Animator anim;
-    Rigidbody2D rb;
+    Animator anim;  //Player's animator
+    Rigidbody2D rb; //Player's rigidbody
     SpriteRenderer playerSprite;
     LayerMask groundLayer;
-    BoxCollider2D pCol;
+    LayerMask enemyLayer;
+    LayerMask interactableLayer;
+
+    Text pressE;
+
+    BoxCollider2D pCol; //The collider of the player
 
     PlayerControlMapping control;
+    StopCamera stopCam;
+    public Interactable focus;
 
     void Awake()
     {
+      cam = GameObject.FindGameObjectWithTag("MainCamera");
+      temp = GameObject.Find("Interact");
+      pressE = temp.GetComponent<Text>();
+      stopCam = cam.GetComponent<StopCamera>();
       rb = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();
       pCol = GetComponent<BoxCollider2D>();
       playerSprite = GetComponent<SpriteRenderer>();
       control = GetComponent<PlayerControlMapping>();
+
       rb.freezeRotation = true;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        player = this.gameObject;
+        //player = this.gameObject;
         groundCheck = transform.Find("GroundCheck");
         currentSpeed = normalSpeed;
         control.inputting = true;
         groundLayer = LayerMask.GetMask("Ground");
+        enemyLayer = LayerMask.GetMask("Enemy");
+        interactableLayer = LayerMask.GetMask("Interactable");
+        pressE.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -71,6 +90,8 @@ public class PlayerMechanics : MonoBehaviour
           anim.SetBool("isIdle", true);
         }
 
+//---------------------------------------------------------------
+
         if(control.run && dashDelay == 0)
         {
             dashDelay = 1.0f;
@@ -81,9 +102,11 @@ public class PlayerMechanics : MonoBehaviour
             anim.SetBool("isDashing", false);
         }
 
-        Collider2D col = Physics2D.OverlapCircle(groundCheck.position, .06f, groundLayer);
+//-------------------------------------------------------------
 
-        if(col != null)
+        RaycastHit2D ground = Physics2D.Raycast(groundCheck.position, -transform.up, groundCheckDis, groundLayer);
+
+        if(ground != null)
         {
             grounded = true;
             inAir = false;
@@ -131,6 +154,8 @@ public class PlayerMechanics : MonoBehaviour
             anim.SetBool("JumpDown", true);
         }
 
+//----------------------------------------------------------------
+
         if(control.attack1)
         {
             anim.SetBool("isAttacking", true);
@@ -140,6 +165,8 @@ public class PlayerMechanics : MonoBehaviour
         {
             anim.SetBool("isAttacking", false);
         }
+
+//----------------------------------------------------------------
 
         if(control.crouch)
         {
@@ -158,6 +185,37 @@ public class PlayerMechanics : MonoBehaviour
         {
             rb.velocity *= crouchingSpeed;
         }
+
+//-----------------------------------------------------------------
+
+        if(control.useItem)
+        {
+            //Interact();
+        }
+
+        Collider2D col2 = Physics2D.OverlapCircle(transform.position, interactRadius, interactableLayer);
+
+        if(col2 != null)
+        {
+            if(!stopCam.stopFollow)
+            {
+                pressE.gameObject.SetActive(true);
+                Interactable interactable = col2.gameObject.GetComponent<Interactable>();
+                SetFocus(interactable);
+                stopCam.StopFollow();
+            }
+        }
+        else
+        {
+            if(stopCam.stopFollow)
+            {
+                stopCam.StopFollow();
+                pressE.gameObject.SetActive(false);
+                RemoveFocus();
+            }
+        }
+
+//-----------------------------------------------------------------
 
         tempVelocity = rb.velocity.y;
 
@@ -179,6 +237,8 @@ public class PlayerMechanics : MonoBehaviour
         }
     }*/
 
+//-----------------------------------------------------------------
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.tag == "Spikes")
@@ -189,37 +249,57 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
     void FlipSprite(){
-      if (control.xMove < 0){
-        playerSprite.flipX = true;
+        if (control.xMove < 0){
+            playerSprite.flipX = true;
 
-        if(flipCol)
-        {
-            pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
-            flipCol = false;
+            if(flipCol)
+            {
+                pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
+                flipCol = false;
+            }
         }
-
-      }
-      else if (control.xMove > 0){
-        playerSprite.flipX = false;
-        if(!flipCol)
-        {
-            pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
-            flipCol = true;
+        else if (control.xMove > 0){
+            playerSprite.flipX = false;
+            if(!flipCol)
+            {
+                pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
+                flipCol = true;
+            }
         }
-      }
     }
 
     void Attack()
     {
-        Vector2 direction = new Vector2(1, 0);
-        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, direction, hitRange);
-        Debug.Log(hit.transform.gameObject.tag);
-        if(hit.transform.gameObject.tag == "Enemy")
+        RaycastHit2D hit;
+
+        if(flipCol)
         {
-            Debug.Log("Here");
+            hit = Physics2D.Raycast(transform.position, transform.right, hitRange, enemyLayer);
+        }
+        else
+        {
+            hit = Physics2D.Raycast(transform.position, -transform.right, hitRange, enemyLayer);
+        }
+
+        if(hit.collider != null)
+        {
             hit.transform.gameObject.SendMessage("TakeDamage", 30);
             hit.transform.gameObject.SendMessage("Knockback", 200);
         }
     }
 
+    void Interact()
+    {
+        Debug.Log("this");
+    }
+
+    void SetFocus(Interactable newFocus)
+    {
+        focus = newFocus;
+    }
+
+    void RemoveFocus()
+    {
+        focus = null;
+    }
 }
