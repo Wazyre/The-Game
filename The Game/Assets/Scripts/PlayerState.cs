@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class PlayerState : MonoBehaviour
 {
@@ -17,8 +18,8 @@ public class PlayerState : MonoBehaviour
     //bool fullDisease;
 
     Animator anim;
-    public Slider healthBar;
-    public Slider diseaseBar;
+    Slider healthBar;
+    Slider diseaseBar;
 
     public PlayerStatistics localPlayerData = new PlayerStatistics();
 
@@ -27,14 +28,14 @@ public class PlayerState : MonoBehaviour
     void Awake()
     {
         anim = GetComponent<Animator>();
+        healthBar = GameObject.FindGameObjectWithTag("HealthBar").GetComponent<Slider>();
+        diseaseBar = GameObject.FindGameObjectWithTag("DiseaseBar").GetComponent<Slider>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         localPlayerData = GlobalControl.Instance.savedPlayerData;
-        //currentHealth = GlobalControl.Instance.hp;
-        //currentDisease = GlobalControl.Instance.disease;
         healthText.text = "";
         diseaseText.text = "";
         StartCoroutine(StayOnHazard());
@@ -124,6 +125,11 @@ public class PlayerState : MonoBehaviour
         return localPlayerData.hp / maxHealth;
     }
 
+    public void Heal()
+    {
+        localPlayerData.hp = maxHealth;
+    }
+
 //-------------------------------------------------------------------
 
     void CheckDisease()
@@ -151,6 +157,13 @@ public class PlayerState : MonoBehaviour
     {
         return localPlayerData.disease / maxDisease;
     }
+
+    public void RemoveDisease()
+    {
+        localPlayerData.disease -= maxDisease*0.25f;
+    }
+
+//-------------------------------------------------------------------
 
     void Die()
     {

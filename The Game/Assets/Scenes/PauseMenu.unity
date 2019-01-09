@@ -343,7 +343,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: Options
 --- !u!222 &326198084
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -464,7 +464,7 @@ GameObject:
   - component: {fileID: 1151715636}
   - component: {fileID: 1151715635}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Options
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

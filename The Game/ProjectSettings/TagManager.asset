@@ -9,6 +9,13 @@ TagManager:
   - Spikes
   - Enemy
   - PauseMenu
+  - HealthBar
+  - DiseaseBar
+  - HUDCanvas
+  - Shrine
+  - InventoryMenu
+  - Bench
+  - BlackScreen
   layers:
   - Default
   - TransparentFX
@@ -21,7 +28,7 @@ TagManager:
   - Ground
   - Enemy
   - Interactable
-  - 
+  - Player
   - 
   - 
   - 

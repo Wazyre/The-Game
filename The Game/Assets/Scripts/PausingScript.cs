@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class PausingScript : MonoBehaviour
 {
-    GameObject pauseMenu;
+    public GameObject pauseMenu;
+    GameObject inventoryMenu;
+
+    void Awake()
+    {
+        inventoryMenu = GameObject.FindGameObjectWithTag("InventoryMenu");
+    }
 
     void Start()
     {
@@ -15,6 +21,7 @@ public class PausingScript : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
+            inventoryMenu.GetComponent<InventoryMechanics>().inventoryMenu.SetActive(false);
             if(Time.timeScale == 0)
             {
                 Time.timeScale = 1;

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
+using UnityEngine.SceneManagement;
+using System;
 
 public class PlayerMechanics : MonoBehaviour
 {
@@ -17,14 +20,29 @@ public class PlayerMechanics : MonoBehaviour
     float dashDelay = 0.0f;
     float interactRadius = 15f;
     float groundCheckDis = 0.11f; //Distane to check for ground
+
     bool grounded = true;
     bool inAir = false;
     bool crouching = false;
     bool flipCol = true;
 
+    string power1;
+    string power2;
+
+    Dictionary<string, bool> powers = new Dictionary<string, bool>
+    {
+        {"Claw", false}, {"Shotgun", false}, {"Scythe", false}, {"Spring", false}
+    };
+    //For power stats, first int is damage followed by range, knockback...
+    Dictionary<string, List<int>> powerStats = new Dictionary<string, List<int>>
+    {
+        {"Claw", new List<int>(){10, 2, 0}}, {"Shotgun", new List<int>(){30, 5, 5}},
+        {"Scythe", new List<int>(){20, 4, 2}}, {"Spring", new List<int>(){0, 0, 0}}
+    };
+
     //GameObject player;
     GameObject cam;
-    GameObject temp; //To hold a text gameobject
+    GameObject inventory;
     Transform groundCheck;
 
     Animator anim;  //Player's animator
@@ -45,8 +63,8 @@ public class PlayerMechanics : MonoBehaviour
     void Awake()
     {
       cam = GameObject.FindGameObjectWithTag("MainCamera");
-      temp = GameObject.Find("Interact");
-      pressE = temp.GetComponent<Text>();
+      pressE = GameObject.Find("Interact").GetComponent<Text>();
+      inventory = GameObject.FindGameObjectWithTag("InventoryMenu");
       stopCam = cam.GetComponent<StopCamera>();
       rb = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();
@@ -156,10 +174,19 @@ public class PlayerMechanics : MonoBehaviour
 
 //----------------------------------------------------------------
 
-        if(control.attack1)
+        if(control.attack2)
         {
             anim.SetBool("isAttacking", true);
-            Attack();
+            Attack(power1);
+        }
+        else
+        {
+            anim.SetBool("isAttacking", false);
+        }
+        if(control.attack2)
+        {
+            anim.SetBool("isAttacking", true);
+            Attack(power2);
         }
         else
         {
@@ -188,21 +215,31 @@ public class PlayerMechanics : MonoBehaviour
 
 //-----------------------------------------------------------------
 
-        if(control.useItem)
-        {
-            //Interact();
-        }
-
         Collider2D col2 = Physics2D.OverlapCircle(transform.position, interactRadius, interactableLayer);
 
         if(col2 != null)
         {
+            Interactable interactable = col2.gameObject.GetComponent<Interactable>();
+
             if(!stopCam.stopFollow)
             {
-                pressE.gameObject.SetActive(true);
-                Interactable interactable = col2.gameObject.GetComponent<Interactable>();
                 SetFocus(interactable);
                 stopCam.StopFollow();
+            }
+
+            if(interactable.isFocus)
+            {
+                pressE.gameObject.SetActive(true);
+
+                if(control.useItem)
+                {
+                    Interact(col2.gameObject);
+                }
+            }
+
+            else
+            {
+                pressE.gameObject.SetActive(false);
             }
         }
         else
@@ -210,9 +247,46 @@ public class PlayerMechanics : MonoBehaviour
             if(stopCam.stopFollow)
             {
                 stopCam.StopFollow();
-                pressE.gameObject.SetActive(false);
                 RemoveFocus();
             }
+        }
+
+//-----------------------------------------------------------------
+
+        if(control.save)
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            PlayerState.Instance.localPlayerData.sceneID = scene.buildIndex;
+            PlayerState.Instance.localPlayerData.playerPosX = transform.position.x;
+            PlayerState.Instance.localPlayerData.playerPosY = transform.position.y;
+            PlayerState.Instance.localPlayerData.playerPosZ = transform.position.z;
+
+            PlayerState.Instance.localPlayerData.powers = powers;
+            PlayerState.Instance.localPlayerData.power1 = power1;
+            PlayerState.Instance.localPlayerData.power2 = power2;
+
+            GlobalControl.Instance.SaveData();
+        }
+
+//-----------------------------------------------------------------
+
+        if(control.load)
+        {
+            GlobalControl.Instance.LoadData();
+            GlobalControl.Instance.isSceneBeingLoaded = true;
+            power1 = GlobalControl.Instance.LocalCopyOfData.power1;
+            power2 = GlobalControl.Instance.LocalCopyOfData.power2;
+
+            int whichScene = GlobalControl.Instance.LocalCopyOfData.sceneID;
+
+            SceneManager.LoadScene(whichScene);
+        }
+
+//-----------------------------------------------------------------
+
+        if(control.inventory)
+        {
+            inventory.GetComponent<InventoryMechanics>().ToggleInvMenu();
         }
 
 //-----------------------------------------------------------------
@@ -260,6 +334,7 @@ public class PlayerMechanics : MonoBehaviour
         }
         else if (control.xMove > 0){
             playerSprite.flipX = false;
+
             if(!flipCol)
             {
                 pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
@@ -268,7 +343,7 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
 
-    void Attack()
+    void Attack(string power)
     {
         RaycastHit2D hit;
 
@@ -283,14 +358,25 @@ public class PlayerMechanics : MonoBehaviour
 
         if(hit.collider != null)
         {
-            hit.transform.gameObject.SendMessage("TakeDamage", 30);
+            hit.transform.gameObject.SendMessage("TakeDamage", powerStats[power][0]);
             hit.transform.gameObject.SendMessage("Knockback", 200);
         }
     }
 
-    void Interact()
+    void Interact(GameObject obj)
     {
-        Debug.Log("this");
+        if(obj.tag == "Shrine")
+        {
+            Activate(obj.GetComponent<ActivatePower>().power);
+        }
+        else if(obj.tag == "Puddle")
+        {
+            GetComponent<PlayerState>().RemoveDisease();
+        }
+        else if(obj.tag == "Bench")
+        {
+            GetComponent<PlayerState>().Heal();
+        }
     }
 
     void SetFocus(Interactable newFocus)
@@ -302,4 +388,16 @@ public class PlayerMechanics : MonoBehaviour
     {
         focus = null;
     }
+
+    void Activate(string power)
+    {
+        foreach(KeyValuePair<string, bool> item in powers)
+        {
+            if(power == item.Key)
+            {
+                powers[item.Key] = true;
+            }
+        }
+    }
+
 }

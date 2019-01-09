@@ -822,6 +822,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e56e3102731b344598868be53560418, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSceneBeingLoaded: 0
+  savedPlayerData:
+    hp: 0
+    disease: 0
+    playerPosX: 0
+    playerPosY: 0
+    playerPosZ: 0
+    money: 0
+    sceneID: 0
+    power1: 
+    power2: 
+  LocalCopyOfData:
+    hp: 0
+    disease: 0
+    playerPosX: 0
+    playerPosY: 0
+    playerPosZ: 0
+    money: 0
+    sceneID: 0
+    power1: 
+    power2: 
 --- !u!4 &165656238
 Transform:
   m_ObjectHideFlags: 0
@@ -1302,7 +1323,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &288968581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5479,7 +5500,7 @@ GameObject:
   - component: {fileID: 568278709}
   m_Layer: 5
   m_Name: DiseaseBar
-  m_TagString: Untagged
+  m_TagString: DiseaseBar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5660,6 +5681,93 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &636364992
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 636364993}
+  - component: {fileID: 636364995}
+  - component: {fileID: 636364994}
+  - component: {fileID: 636364996}
+  m_Layer: 5
+  m_Name: BlackScreen
+  m_TagString: BlackScreen
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &636364993
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636364992}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1723100536}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 928, y: 423}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &636364994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636364992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+--- !u!222 &636364995
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636364992}
+  m_CullTransparentMesh: 0
+--- !u!114 &636364996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636364992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8283c5f1356d2454b961870739efb32d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &668168209
 GameObject:
   m_ObjectHideFlags: 0
@@ -5748,7 +5856,7 @@ GameObject:
   - component: {fileID: 678462621}
   m_Layer: 5
   m_Name: HUDCanvas
-  m_TagString: Untagged
+  m_TagString: HUDCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5925,7 +6033,7 @@ GameObject:
   - component: {fileID: 701657690}
   m_Layer: 10
   m_Name: ColumnShortSprite
-  m_TagString: Untagged
+  m_TagString: Shrine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6030,6 +6138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cd3fd6626b336249800facc62db6e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasInteracted: 0
+  isFocus: 0
   radius: 2
 --- !u!1 &727084662
 GameObject:
@@ -6114,7 +6224,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 727090520}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6425,7 +6535,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1392754654
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6605,7 +6715,7 @@ GameObject:
   - component: {fileID: 1409951350}
   m_Layer: 5
   m_Name: HealthBar
-  m_TagString: Untagged
+  m_TagString: HealthBar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6959,6 +7069,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1392754654}
+  - {fileID: 636364993}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6976,7 +7087,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1723100532}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16649bb98c7ba3d48983dd6130d45b81, type: 3}
+  m_Script: {fileID: 11500000, guid: 8283c5f1356d2454b961870739efb32d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1723100538
@@ -7276,7 +7387,7 @@ GameObject:
   - component: {fileID: 1981360175}
   - component: {fileID: 1981360176}
   - component: {fileID: 1981360177}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -7415,13 +7526,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 1981360169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3f4e6858b502494a80d2a4c953f5844, type: 3}
+  m_Script: {fileID: 11500000, guid: 8713c129a32575b48a34762d624a2f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   healthText: {fileID: 479337673}
   diseaseText: {fileID: 1800729019}
-  healthBar: {fileID: 1409951350}
-  diseaseBar: {fileID: 568278709}
+  localPlayerData:
+    hp: 0
+    disease: 0
+    playerPosX: 0
+    playerPosY: 0
+    playerPosZ: 0
+    money: 0
+    sceneID: 0
+    power1: 
+    power2: 
 --- !u!114 &1981360176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7443,6 +7562,9 @@ MonoBehaviour:
   attack1: 0
   attack2: 0
   crouch: 0
+  save: 0
+  load: 0
+  inventory: 0
   inputting: 0
   playerPosition: {x: 0, y: 0, z: 0}
 --- !u!95 &1981360177

@@ -11,13 +11,13 @@ public class FirstScene : MonoBehaviour
     bool ran = false;
 
     Text introText;
-    FadeText fade;
+    Fade fade;
 
     void Awake()
     {
         GameObject intro = GameObject.Find("WakeUp");
         introText = intro.GetComponent<Text>();
-        fade = GetComponent<FadeText>();
+        fade = GetComponent<Fade>();
         introText.color = new Color(introText.color.r, introText.color.g, introText.color.b, 0);
     }
 
@@ -25,7 +25,7 @@ public class FirstScene : MonoBehaviour
     {
         if(!ran)
         {
-            StartCoroutine(fade.FadeTextInOut(fps, fps, introText, delay));
+            StartCoroutine(fade.FadeInOut(fps, fps, introText, delay));
             ran = true;
         }
     }

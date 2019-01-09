@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FadeText : MonoBehaviour
+public class Fade : MonoBehaviour
 {
-    public IEnumerator FadeTextInOut(float t1, float t2, Text i, float delay)
+    public IEnumerator FadeInOut(float t1, float t2, GameObject i, float delay)
     {
-        StartCoroutine(FadeTextToFullAlpha(t1, i));
+        StartCoroutine(FadeToFullAlpha(t1, i));
         yield return new WaitForSeconds(delay);
-        StartCoroutine(FadeTextToZeroAlpha(t2, i));
+        StartCoroutine(FadeToZeroAlpha(t2, i));
     }
 
-    public IEnumerator FadeTextToFullAlpha(float t, Text i)
+    public IEnumerator FadeToFullAlpha(float t, GameObject i)
     {
         i.color = new Color(i.color.r, i.color.g, i.color.b, 0);
         while (i.color.a < 1.0f)
@@ -22,7 +22,7 @@ public class FadeText : MonoBehaviour
         }
     }
 
-    public IEnumerator FadeTextToZeroAlpha(float t, Text i)
+    public IEnumerator FadeToZeroAlpha(float t, GameObject i)
     {
         i.color = new Color(i.color.r, i.color.g, i.color.b, 1);
         while (i.color.a > 0.0f)

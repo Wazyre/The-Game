@@ -54,16 +54,21 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Resources\Realistic Hail Set\Demo Scene\Scripts\DemoSceneController.cs" />
+     <Compile Include="Assets\Scripts\ActivatePower.cs" />
      <Compile Include="Assets\Scripts\BetweenLevels.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\Cutscene.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
-     <Compile Include="Assets\Scripts\FadeText.cs" />
+     <Compile Include="Assets\Scripts\Fade.cs" />
      <Compile Include="Assets\Scripts\FirstScene.cs" />
      <Compile Include="Assets\Scripts\FollowPlayer.cs" />
      <Compile Include="Assets\Scripts\GlobalControl.cs" />
      <Compile Include="Assets\Scripts\Interactable.cs" />
+     <Compile Include="Assets\Scripts\InventoryMechanics.cs" />
+     <Compile Include="Assets\Scripts\Item.cs" />
+     <Compile Include="Assets\Scripts\ItemDatabase.cs" />
      <Compile Include="Assets\Scripts\LoadLevel.cs" />
+     <Compile Include="Assets\Scripts\NewScene.cs" />
      <Compile Include="Assets\Scripts\Parallax.cs" />
      <Compile Include="Assets\Scripts\PausingScript.cs" />
      <Compile Include="Assets\Scripts\PlayerAttacks.cs" />
