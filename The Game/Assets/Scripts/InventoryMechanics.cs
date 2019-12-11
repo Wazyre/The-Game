@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class InventoryMechanics : MonoBehaviour
 {
-    bool showMenu = false;
-    //string[] slots = new string[12];
+    //Toggles inventory menu visibility
+    bool showInvMenu = false;
 
+    //Inventory of player
     public List<Item> playerItems = new List<Item>();
+
+    //Holds item database
     public ItemDatabase itemDatabase;
 
+    //Holds gamePbjects of menus
     public GameObject inventoryMenu;
     GameObject pauseMenu;
 
@@ -18,7 +22,8 @@ public class InventoryMechanics : MonoBehaviour
     {
         inventoryMenu = GameObject.FindGameObjectWithTag("InventoryMenu");
         pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu");
-        inventoryMenu.SetActive(false);
+        inventoryMenu.SetActive(false); //Begin as not visible
+        
     }
 
     // Update is called once per frame
@@ -26,7 +31,7 @@ public class InventoryMechanics : MonoBehaviour
     {
         if(pauseMenu.GetComponent<PausingScript>().pauseMenu.activeSelf == false)
         {
-            if(showMenu)
+            if(showInvMenu)
             {
                 inventoryMenu.SetActive(true);
             }
@@ -40,14 +45,16 @@ public class InventoryMechanics : MonoBehaviour
 
     public void ToggleInvMenu()
     {
-        showMenu = !showMenu;
+        showInvMenu = !showInvMenu;
     }
 
     void DisplayItems()
     {
+        //FILL IN
         Debug.Log("hy");
     }
 
+    //Registers and adds item to player's inventory
     public void RegisterItem(string name)
     {
         Item itemToAdd = itemDatabase.GetItem(name);

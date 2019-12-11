@@ -1,0 +1,25 @@
+Create Item database
+
+Remove or change parallax script heavily
+
+Add enemy follow player script
+
+Ability to change controls
+
+Add falling animation
+
+Work on savedata location
+
+Is BetweenLevels script needed?
+
+Don't let inventory be erased between loads; Add player items to global control
+
+Add save and load text when that happens
+
+Play scenes when getting powers
+
+Animation for when player sprite flips
+
+Enemy doesn't disappear, but a corpse sprite lies there instead
+
+Controls screen

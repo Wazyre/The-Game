@@ -37,8 +37,11 @@ public class SwitchScenes : MonoBehaviour
 
     void Update()
     {
+        //Applies a collider to detect player
         Collider2D col = Physics2D.OverlapCircle(transform.position, radius, playerLayer);
-        if(col != null && Input.GetKeyDown("E"))
+
+        //This is for doors, entryways...etc. NOT EDGE OF SCREEN TRANSITION
+        if(col != null && Input.GetKeyDown("E")) //If player is there and pressing E
         {
             newScene = col.GetComponent<NewScene>();
             ChangeScene(sceneName.scene, newScene.xPos, newScene.yPos);
@@ -47,9 +50,9 @@ public class SwitchScenes : MonoBehaviour
 
     public void ChangeScene(Scene scene, float xPos, float yPos)
     {
-        StartCoroutine(fade.FadeInOut(fps, fps, blackScreen, delay));
-        player.transform.position = new Vector3(xPos, yPos, 0);
-        PlayerState.Instance.SavePlayer();
-        SceneManager.LoadScene(scene);
+        StartCoroutine(fade.FadeInOut(fps, fps, blackScreen, delay)); //Begins fade to black
+        player.transform.position = new Vector3(xPos, yPos, 0); //Changes player's position in new scene
+        PlayerState.Instance.SavePlayer(); //Save data
+        SceneManager.LoadScene(scene); //Load new scene
     }
 }

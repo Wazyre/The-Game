@@ -5,7 +5,7 @@ using UnityEngine;
 public class FollowPlayer : MonoBehaviour
 {
     float minX = -.4f;
-    float maxX = 50.3f;
+    float maxX = 50.3f; //Why this number?
 
     GameObject player;
 

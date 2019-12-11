@@ -4,5 +4,7 @@ using UnityEngine;
 
 public class ActivatePower : MonoBehaviour
 {
+    //Class is used to hold the power a shrine unlocks, so
+    //attach script to shrines
     public string power;
 }

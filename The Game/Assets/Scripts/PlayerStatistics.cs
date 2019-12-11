@@ -14,7 +14,7 @@ public class PlayerStatistics
     public float playerPosZ;
 
     public int money;
-    public int sceneID;
+    public int sceneID; //Current scene
 
     public string power1;
     public string power2;

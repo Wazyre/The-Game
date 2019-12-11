@@ -9,22 +9,25 @@ using System;
 public class PlayerMechanics : MonoBehaviour
 {
     //float hMove;
+    //Speeds and jump strengths of player
     float bigJumpForce = 200f;
     float smallJumpForce = 50f;
     float normalSpeed = 10f;
     //float runningSpeed = 15f;
     float crouchingSpeed = 0.5f;
     float currentSpeed;
+
     float hitRange = 2f;
     float tempVelocity;
     float dashDelay = 0.0f;
     float interactRadius = 15f;
     float groundCheckDis = 0.11f; //Distane to check for ground
 
+    //Check conditions of player
     bool grounded = true;
     bool inAir = false;
     bool crouching = false;
-    bool flipCol = true;
+    bool flipCol = true; //True if facing right, false if facing left
 
     string power1;
     string power2;
@@ -52,7 +55,7 @@ public class PlayerMechanics : MonoBehaviour
     LayerMask enemyLayer;
     LayerMask interactableLayer;
 
-    Text pressE;
+    Text interactText;
 
     BoxCollider2D pCol; //The collider of the player
 
@@ -63,7 +66,7 @@ public class PlayerMechanics : MonoBehaviour
     void Awake()
     {
       cam = GameObject.FindGameObjectWithTag("MainCamera");
-      pressE = GameObject.Find("Interact").GetComponent<Text>();
+      interactText = GameObject.Find("Interact").GetComponent<Text>();
       inventory = GameObject.FindGameObjectWithTag("InventoryMenu");
       stopCam = cam.GetComponent<StopCamera>();
       rb = GetComponent<Rigidbody2D>();
@@ -72,7 +75,7 @@ public class PlayerMechanics : MonoBehaviour
       playerSprite = GetComponent<SpriteRenderer>();
       control = GetComponent<PlayerControlMapping>();
 
-      rb.freezeRotation = true;
+      rb.freezeRotation = true; //Prevents sprite from flipping
     }
 
     // Start is called before the first frame update
@@ -85,14 +88,15 @@ public class PlayerMechanics : MonoBehaviour
         groundLayer = LayerMask.GetMask("Ground");
         enemyLayer = LayerMask.GetMask("Enemy");
         interactableLayer = LayerMask.GetMask("Interactable");
-        pressE.gameObject.SetActive(false);
+        interactText.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
         FlipSprite();
-        //hMove = Input.GetAxisRaw("Horizontal") * currentSpeed;
+
+        //Calculates velocity based on speed and direction faced
         Vector2 moveVelocity = new Vector2(control.xMove*currentSpeed, rb.velocity.y);
 
         rb.velocity = moveVelocity;
@@ -110,21 +114,34 @@ public class PlayerMechanics : MonoBehaviour
 
 //---------------------------------------------------------------
 
+        //If running, the player gets a dash with a delay of 1 second
         if(control.run && dashDelay == 0)
         {
-            dashDelay = 1.0f;
-            anim.SetBool("isDashing", true);
-            rb.AddForce(new Vector2(rb.velocity.x*300, 0));
+            dashDelay = 1.0f; //Amount of delay in seconds between dashes
+            anim.SetBool("isDashing", true); //Dashing animation on
+            rb.AddForce(new Vector2(rb.velocity.x*300, 0)); //Dashing force
         }
-        else{
-            anim.SetBool("isDashing", false);
+        else
+        {
+            anim.SetBool("isDashing", false); //Dashing animation off
+        }
+
+        //Counts down time between dashes
+        if(dashDelay > 0)
+        {
+            dashDelay -= Time.deltaTime;
+        }
+        else
+        {
+            dashDelay = 0.0f;
         }
 
 //-------------------------------------------------------------
 
+        //Signals if the player is on the ground or not
         RaycastHit2D ground = Physics2D.Raycast(groundCheck.position, -transform.up, groundCheckDis, groundLayer);
 
-        if(ground != null)
+        if(ground != null) //If the player is standing on ground
         {
             grounded = true;
             inAir = false;
@@ -132,6 +149,7 @@ public class PlayerMechanics : MonoBehaviour
             anim.SetBool("isIdle", true);
         }
 
+        //Animation and forces for first jump
         if(control.jumpOn && grounded)
         {
             if(!inAir)
@@ -144,6 +162,8 @@ public class PlayerMechanics : MonoBehaviour
                 anim.SetBool("isRunning", false);
             }
         }
+
+        //Animation and forces for a double jump if enabled
         else if(control.jumpOn && inAir)
         {
             inAir = false;
@@ -156,8 +176,9 @@ public class PlayerMechanics : MonoBehaviour
         {
             if (rb.velocity.y > 0)
             {
-                anim.SetBool("isJumping", false);
-                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+                anim.SetBool("isJumping", false); //CHANGE TO FALLING Animation
+                anim.SetBool("isFalling", true);
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f); //Adds a feather fall effect
             }
         }
 
@@ -171,6 +192,9 @@ public class PlayerMechanics : MonoBehaviour
             anim.SetBool("JumpUp", false);
             anim.SetBool("JumpDown", true);
         }
+
+        //Carries velocity to compare vertical distnace when jumping
+        tempVelocity = rb.velocity.y;
 
 //----------------------------------------------------------------
 
@@ -195,7 +219,8 @@ public class PlayerMechanics : MonoBehaviour
 
 //----------------------------------------------------------------
 
-        if(control.crouch)
+        //Animations and controls for crouching, with no crouching while in the air
+        if(control.crouch && control.jumpOff && !inAir)
         {
             anim.SetBool("isCrouching", true);
             anim.SetBool("isIdle", false);
@@ -210,18 +235,19 @@ public class PlayerMechanics : MonoBehaviour
 
         if(anim.GetBool("isCrouching"))
         {
-            rb.velocity *= crouchingSpeed;
+            rb.velocity *= crouchingSpeed; //Change speed to crouching speed
         }
 
 //-----------------------------------------------------------------
 
+        //Checking for any nearby interactables
         Collider2D col2 = Physics2D.OverlapCircle(transform.position, interactRadius, interactableLayer);
 
-        if(col2 != null)
+        if(col2 != null) //If one is found
         {
             Interactable interactable = col2.gameObject.GetComponent<Interactable>();
 
-            if(!stopCam.stopFollow)
+            if(!stopCam.stopFollow) //Stop the camera and focus it on the interactable
             {
                 SetFocus(interactable);
                 stopCam.StopFollow();
@@ -229,22 +255,22 @@ public class PlayerMechanics : MonoBehaviour
 
             if(interactable.isFocus)
             {
-                pressE.gameObject.SetActive(true);
+                interactText.gameObject.SetActive(true); //Turn on press E text
 
-                if(control.useItem)
+                if(control.useItem) //If E is pressed
                 {
-                    Interact(col2.gameObject);
+                    Interact(col2.gameObject); //Let the interactable do its thing
                 }
             }
 
             else
             {
-                pressE.gameObject.SetActive(false);
+                interactText.gameObject.SetActive(false);
             }
         }
-        else
+        else //If there is no interactable nearby anymore
         {
-            if(stopCam.stopFollow)
+            if(stopCam.stopFollow) //Resume camera movement
             {
                 stopCam.StopFollow();
                 RemoveFocus();
@@ -252,7 +278,7 @@ public class PlayerMechanics : MonoBehaviour
         }
 
 //-----------------------------------------------------------------
-
+    //ADD SAVE AND LOAD ICONS/TEXT
         if(control.save)
         {
             Scene scene = SceneManager.GetActiveScene();
@@ -274,16 +300,21 @@ public class PlayerMechanics : MonoBehaviour
         {
             GlobalControl.Instance.LoadData();
             GlobalControl.Instance.isSceneBeingLoaded = true;
+            int whichScene = GlobalControl.Instance.LocalCopyOfData.sceneID;
+            SceneManager.LoadScene(whichScene);
+
+            transform.position.x = GlobalControl.Instance.LocalCopyOfData.playerPosX;
+            transform.position.y = GlobalControl.Instance.LocalCopyOfData.playerPosY;
+            transform.position.z = GlobalControl.Instance.LocalCopyOfData.playerPosZ;
+
+            powers = GlobalControl.Instance.LocalCopyOfData.powers;
             power1 = GlobalControl.Instance.LocalCopyOfData.power1;
             power2 = GlobalControl.Instance.LocalCopyOfData.power2;
-
-            int whichScene = GlobalControl.Instance.LocalCopyOfData.sceneID;
-
-            SceneManager.LoadScene(whichScene);
         }
 
 //-----------------------------------------------------------------
 
+        //Toggles inventory screen when its button is pressed
         if(control.inventory)
         {
             inventory.GetComponent<InventoryMechanics>().ToggleInvMenu();
@@ -291,16 +322,7 @@ public class PlayerMechanics : MonoBehaviour
 
 //-----------------------------------------------------------------
 
-        tempVelocity = rb.velocity.y;
 
-        if(dashDelay > 0)
-        {
-            dashDelay -= Time.deltaTime;
-        }
-        else
-        {
-            dashDelay = 0.0f;
-        }
     }
 
     /*void OnCollisionStay2D(Collision2D collision)
@@ -317,13 +339,17 @@ public class PlayerMechanics : MonoBehaviour
     {
         if(other.gameObject.tag == "Spikes")
         {
-
+            //Adds a knockback to player if steps on spikes
             rb.AddForce(new Vector2(rb.velocity.x*-100, rb.velocity.y*-100));
             //rb.AddForce(new Vector2(, rb.velocity.y));
         }
     }
-    void FlipSprite(){
-        if (control.xMove < 0){
+
+    //Flips sprite depending on direction player is facing
+    void FlipSprite()
+    {
+        if (control.xMove < 0) //If moving left
+        {
             playerSprite.flipX = true;
 
             if(flipCol)
@@ -332,7 +358,8 @@ public class PlayerMechanics : MonoBehaviour
                 flipCol = false;
             }
         }
-        else if (control.xMove > 0){
+        else if (control.xMove > 0) //If moving right
+        {
             playerSprite.flipX = false;
 
             if(!flipCol)
@@ -347,11 +374,11 @@ public class PlayerMechanics : MonoBehaviour
     {
         RaycastHit2D hit;
 
-        if(flipCol)
+        if(flipCol) //If facing right
         {
             hit = Physics2D.Raycast(transform.position, transform.right, hitRange, enemyLayer);
         }
-        else
+        else //If facing left
         {
             hit = Physics2D.Raycast(transform.position, -transform.right, hitRange, enemyLayer);
         }
@@ -363,10 +390,12 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
 
+    //PLay out different stuff based on interactable interacted with
     void Interact(GameObject obj)
     {
         if(obj.tag == "Shrine")
         {
+            //PLAY SCENE
             Activate(obj.GetComponent<ActivatePower>().power);
         }
         else if(obj.tag == "Puddle")
@@ -379,16 +408,19 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
 
+    //Change camera focus to interactable
     void SetFocus(Interactable newFocus)
     {
         focus = newFocus;
     }
 
+    //Remove all focuses
     void RemoveFocus()
     {
         focus = null;
     }
 
+    //Activate a new power for the player
     void Activate(string power)
     {
         foreach(KeyValuePair<string, bool> item in powers)

@@ -4,30 +4,32 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public bool hasInteracted = false;
-    public bool isFocus = false;
+    public bool hasInteracted = false; //Has been interacted with
+    public bool isFocus = false; //Is the current focus for the camera
 
-    public float radius = 2f;
+    public float radius = 2f; //Radius for interactability
 
-    Transform playerT;
+    //Transform playerT;
     LayerMask trigger;
+    GameObject player;
 
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
         trigger = LayerMask.GetMask("Player");
     }
 
-    public void OnFocused(Transform playerTransform)
+    /*public void OnFocused(Transform playerTransform)
     {
         isFocus = true;
-        playerT = playerTransform;
+        //playerT = playerTransform;
     }
 
     public void OnDefocused()
     {
         isFocus = false;
-        playerT = null;
-    }
+        //playerT = null;
+    }*/
 
     void OnDrawGizmos()
     {
@@ -39,20 +41,19 @@ public class Interactable : MonoBehaviour
     {
         Collider2D player = Physics2D.OverlapCircle(transform.position, radius, trigger);
 
-        if(player != null)
+        if(player != null) //If the player is within the radius
         {
-            hasInteracted = true;
-            OnFocused(player.transform);
+            isFocus = true; //Turn camera focus on it
         }
         else
         {
-            OnDefocused();
+            isFocus = false; //Remove camera focus from it
         }
 
         if(isFocus)
         {
-            float distance = Vector2.Distance(playerT.position, transform.position);
-            if(distance <= radius)
+            float distance = Vector2.Distance(player.position, transform.position);
+            if(distance <= radius) //THIS WILL ALWAYS BE TRUE>>>WHAT?
             {
 
             }

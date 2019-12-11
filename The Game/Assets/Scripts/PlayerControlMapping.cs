@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerControlMapping : MonoBehaviour
 {
-    public float xMove;  //Horizontal movement
-    public float yMove;
+    public float xMove; //Horizontal movement
+    public float yMove; //Vertical movement
 
     public bool jumpOn;
     public bool jumpOff;
@@ -17,7 +17,7 @@ public class PlayerControlMapping : MonoBehaviour
     public bool save;
     public bool load;
     public bool inventory;
-    public bool inputting = true;
+    public bool inputting = true; //Player can input or not
 
     public Vector3 playerPosition;
 
@@ -42,7 +42,7 @@ public class PlayerControlMapping : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      if(inputting)
+      if(inputting) //If player input is on
       {
           playerPosition = transform.position;
           xMove = Input.GetAxisRaw("Horizontal");
@@ -62,10 +62,10 @@ public class PlayerControlMapping : MonoBehaviour
 
     public void noInput()
     {
-        inputting = false;
+        inputting = false; //Shuts off input for player
     }
     public void startInput()
     {
-        inputting = true;
+        inputting = true; //Turns on input for player
     }
 }

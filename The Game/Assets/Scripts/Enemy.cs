@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Body and health of enemy
         rb = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
     }
@@ -19,6 +20,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Destroy enemy if health lower than 0
         if(currentHealth <= 0)
         {
             Destroy(this.gameObject);
@@ -29,6 +31,8 @@ public class Enemy : MonoBehaviour
     {
         currentHealth -= damage;
     }
+
+    //Knockback after being attacked
     void Knockback(int force)
     {
         rb.AddForce(new Vector2(rb.velocity.x*-force, 0));
