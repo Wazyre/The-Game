@@ -17,7 +17,7 @@ public class PlayerMechanics : MonoBehaviour
     float crouchingSpeed = 0.5f;
     float currentSpeed;
 
-    float hitRange = 2f;
+    //float hitRange = 2f;
     float tempVelocity;
     float dashDelay = 0.0f;
     float interactRadius = 15f;
@@ -32,10 +32,12 @@ public class PlayerMechanics : MonoBehaviour
     string power1;
     string power2;
 
+    //Dictionary of "discovered" and enabled powers
     Dictionary<string, bool> powers = new Dictionary<string, bool>
     {
         {"Claw", false}, {"Shotgun", false}, {"Scythe", false}, {"Spring", false}
     };
+
     //For power stats, first int is damage followed by range, knockback...
     Dictionary<string, List<int>> powerStats = new Dictionary<string, List<int>>
     {
@@ -198,7 +200,7 @@ public class PlayerMechanics : MonoBehaviour
 
 //----------------------------------------------------------------
 
-        if(control.attack2)
+        if(control.attack1 && !control.crouch)
         {
             anim.SetBool("isAttacking", true);
             Attack(power1);
@@ -207,7 +209,7 @@ public class PlayerMechanics : MonoBehaviour
         {
             anim.SetBool("isAttacking", false);
         }
-        if(control.attack2)
+        if(control.attack2 && !control.crouch)
         {
             anim.SetBool("isAttacking", true);
             Attack(power2);
@@ -370,23 +372,27 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
 
+    //Range of attack depends on power used
     void Attack(string power)
     {
         RaycastHit2D hit;
 
         if(flipCol) //If facing right
         {
-            hit = Physics2D.Raycast(transform.position, transform.right, hitRange, enemyLayer);
+            //hit = Physics2D.Raycast(transform.position, transform.right, hitRange, enemyLayer);
+            hit = Physics2D.Raycast(transform.position, transform.right, powerStats[power][1], enemyLayer);
         }
         else //If facing left
         {
-            hit = Physics2D.Raycast(transform.position, -transform.right, hitRange, enemyLayer);
+            //hit = Physics2D.Raycast(transform.position, -transform.right, hitRange, enemyLayer);
+            hit = Physics2D.Raycast(transform.position, transform.right, powerStats[power][1], enemyLayer);
         }
 
         if(hit.collider != null)
         {
             hit.transform.gameObject.SendMessage("TakeDamage", powerStats[power][0]);
-            hit.transform.gameObject.SendMessage("Knockback", 200);
+            //hit.transform.gameObject.SendMessage("Knockback", 200);
+            hit.transform.gameObject.SendMessage("Knockback", powerStats[power][2]);
         }
     }
 
@@ -405,6 +411,7 @@ public class PlayerMechanics : MonoBehaviour
         else if(obj.tag == "Bench")
         {
             GetComponent<PlayerState>().Heal();
+            anim.SetBool("isSitting", true);
         }
     }
 

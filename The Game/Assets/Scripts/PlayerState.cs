@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,15 +30,15 @@ public class PlayerState : MonoBehaviour
         anim = GetComponent<Animator>();
         healthBar = GameObject.FindGameObjectWithTag("HealthBar").GetComponent<Slider>();
         diseaseBar = GameObject.FindGameObjectWithTag("DiseaseBar").GetComponent<Slider>();
+        localPlayerData = GlobalControl.Instance.savedPlayerData;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        localPlayerData = GlobalControl.Instance.savedPlayerData;
         healthText.text = "";
         diseaseText.text = "";
-        StartCoroutine(StayOnHazard());
+        //StartCoroutine(StayOnHazard());
         healthBar.value = CalculateHealthBar();
         diseaseBar.value = CalculateDiseaseBar();
     }
@@ -115,7 +115,7 @@ public class PlayerState : MonoBehaviour
         if(localPlayerData.hp <= 0)
         {
             localPlayerData.hp = 0;
-            Die();
+            //Die();
         }
         healthBar.value = CalculateHealthBar();
     }

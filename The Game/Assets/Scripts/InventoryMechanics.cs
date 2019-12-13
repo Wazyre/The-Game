@@ -5,7 +5,8 @@ using UnityEngine;
 public class InventoryMechanics : MonoBehaviour
 {
     //Toggles inventory menu visibility
-    bool showInvMenu = false;
+    //bool showInvMenu = false;
+    //string[] slots = new string[12];
 
     //Inventory of player
     public List<Item> playerItems = new List<Item>();
@@ -23,10 +24,10 @@ public class InventoryMechanics : MonoBehaviour
         inventoryMenu = GameObject.FindGameObjectWithTag("InventoryMenu");
         pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu");
         inventoryMenu.SetActive(false); //Begin as not visible
-        
+
     }
 
-    // Update is called once per frame
+    /* Update is called once per frame
     void Update()
     {
         if(pauseMenu.GetComponent<PausingScript>().pauseMenu.activeSelf == false)
@@ -41,11 +42,15 @@ public class InventoryMechanics : MonoBehaviour
             }
         }
 
-    }
-
+    }*/
+    //Toggles inventory menu visibility
     public void ToggleInvMenu()
     {
-        showInvMenu = !showInvMenu;
+        //showInvMenu = !showInvMenu;
+        if(pauseMenu.GetComponent<PausingScript>().pauseMenu.activeSelf == false)
+        {
+          inventoryMenu.SetActive(!inventoryMenu.activeSelf);
+        }
     }
 
     void DisplayItems()
@@ -72,6 +77,8 @@ public class InventoryMechanics : MonoBehaviour
         return playerItems.Find(item => item.id == id);
     }
 
+
+    //Remove item from player's inventory
     public void DeleteItem(int id)
     {
         if(CheckForItem(id) != null)

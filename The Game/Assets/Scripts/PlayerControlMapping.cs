@@ -13,6 +13,7 @@ public class PlayerControlMapping : MonoBehaviour
     public bool useItem;
     public bool attack1;
     public bool attack2;
+    public bool heal;
     public bool crouch;
     public bool save;
     public bool load;
@@ -33,6 +34,7 @@ public class PlayerControlMapping : MonoBehaviour
         useItem = Input.GetKeyDown(KeyCode.E);
         attack1 = Input.GetKeyDown(KeyCode.Mouse0);
         attack2 = Input.GetKeyDown(KeyCode.Mouse1);
+        heal = Input.GetKeyDown(KeyCode.Q);
         crouch = Input.GetKey(KeyCode.LeftControl);
         save = Input.GetKeyDown(KeyCode.F5);
         load = Input.GetKeyDown(KeyCode.F9);
@@ -53,6 +55,7 @@ public class PlayerControlMapping : MonoBehaviour
           useItem = Input.GetKeyDown(KeyCode.E);
           attack1 = Input.GetKeyDown(KeyCode.Mouse0);
           attack2 = Input.GetKeyDown(KeyCode.Mouse1);
+          heal = Input.GetKeyDown(KeyCode.Q);
           crouch = Input.GetKey(KeyCode.LeftControl);
           save = Input.GetKeyDown(KeyCode.F5);
           load = Input.GetKeyDown(KeyCode.F9);
@@ -60,12 +63,19 @@ public class PlayerControlMapping : MonoBehaviour
       }
     }
 
-    public void noInput()
+    public void NoInput()
     {
         inputting = false; //Shuts off input for player
     }
-    public void startInput()
+    public void StartInput()
     {
         inputting = true; //Turns on input for player
+    }
+
+    public IEnumerator ToggleInput(float delay)
+    {
+        NoInput();
+        yield return new WaitForSeconds(delay);
+        StartInput();
     }
 }
