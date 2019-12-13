@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class StopCamera : MonoBehaviour
 {
-    public bool stopFollow = false;
+    bool isFollow = false; //Checks if camera is following the player
 
-    public void StopFollow()
+    public bool IsFollowing() {return isFollow;}
+
+    public void ChangeFollow()
     {
-        stopFollow = !stopFollow;
+        isFollow = !isFollow;
     }
 }

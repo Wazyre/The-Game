@@ -1,5 +1,7 @@
 Create Item database
 
+Deal with private and public members
+
 Remove or change parallax script heavily
 
 Add enemy follow player script

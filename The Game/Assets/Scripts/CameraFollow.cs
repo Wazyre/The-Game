@@ -13,7 +13,7 @@ public class CameraFollow : MonoBehaviour
     float newPosY;
     float camVelocity = 0.0f;
 
-    bool notFollowing;
+    bool isFollow;
 
     GameObject player;
 
@@ -27,14 +27,14 @@ public class CameraFollow : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         focus = player.GetComponent<PlayerMechanics>().focus;
         offset = transform.position - player.transform.position;
-        notFollowing = GetComponent<StopCamera>().stopFollow;
+        isFollow = GetComponent<StopCamera>().isFollowing();
     }
 
     // Update is called once per frame
     void Update() {
 
-        notFollowing = GetComponent<StopCamera>().stopFollow;
-        if(!notFollowing)
+        isFollow = GetComponent<StopCamera>().isFollowing();
+        if(!isFollow)
         {
             newPos = player.transform.position + offset;
 

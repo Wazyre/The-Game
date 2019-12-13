@@ -6,8 +6,8 @@ using System.IO;
 
 public class PlayerState : MonoBehaviour
 {
-    public Text healthText;
-    public Text diseaseText;
+    Text healthText = "";
+    Text diseaseText = "";
 
     float maxHealth = 100.0f;
     //float currentHealth;
@@ -36,8 +36,6 @@ public class PlayerState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        healthText.text = "";
-        diseaseText.text = "";
         //StartCoroutine(StayOnHazard());
         healthBar.value = CalculateHealthBar();
         diseaseBar.value = CalculateDiseaseBar();

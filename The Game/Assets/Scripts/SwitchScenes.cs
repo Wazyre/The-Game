@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class SwitchScenes : MonoBehaviour
 {
-    public float xPosition;
-    public float yPosition;
     float fps = 3f;
     float delay = 4f;
     float radius = 1f;
@@ -49,7 +47,7 @@ public class SwitchScenes : MonoBehaviour
         if(col != null && Input.GetKeyDown("E")) //If player is there and pressing E
         {
             newScene = col.GetComponent<NewScene>();
-            ChangeScene(newScene.scene, newScene.xPos, newScene.yPos);
+            ChangeScene(newScene.getScene(), newScene.xPos, newScene.yPos);
         }
     }
 

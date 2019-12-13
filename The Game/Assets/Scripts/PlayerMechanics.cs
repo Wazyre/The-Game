@@ -249,13 +249,13 @@ public class PlayerMechanics : MonoBehaviour
         {
             Interactable interactable = col2.gameObject.GetComponent<Interactable>();
 
-            if(!stopCam.stopFollow) //Stop the camera and focus it on the interactable
+            if(!stopCam.isFollowing()) //Stop the camera and focus it on the interactable
             {
                 SetFocus(interactable);
-                stopCam.StopFollow();
+                stopCam.ChangeFollow();
             }
 
-            if(interactable.isFocus)
+            if(interactable.IsFocus())
             {
                 interactText.gameObject.SetActive(true); //Turn on press E text
 
@@ -272,9 +272,9 @@ public class PlayerMechanics : MonoBehaviour
         }
         else //If there is no interactable nearby anymore
         {
-            if(stopCam.stopFollow) //Resume camera movement
+            if(stopCam.isFollowing()) //Resume camera movement
             {
-                stopCam.StopFollow();
+                stopCam.ChangeFollow();
                 RemoveFocus();
             }
         }

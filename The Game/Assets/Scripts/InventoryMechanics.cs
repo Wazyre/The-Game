@@ -12,10 +12,10 @@ public class InventoryMechanics : MonoBehaviour
     public List<Item> playerItems = new List<Item>();
 
     //Holds item database
-    public ItemDatabase itemDatabase;
+    ItemDatabase itemDatabase;
 
     //Holds gamePbjects of menus
-    public GameObject inventoryMenu;
+    GameObject inventoryMenu;
     GameObject pauseMenu;
 
     // Start is called before the first frame update

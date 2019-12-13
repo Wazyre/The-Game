@@ -8,6 +8,20 @@ public class NewScene : MonoBehaviour
     public Scene scene;
 
     //Player's beginning position in new scene
-    public float xPos;
-    public float yPos;
+    public float m_xPos;
+    public float m_yPos;
+
+    public Scene getScene() {return scene;}
+
+    public float xPos
+    {
+      get{return m_xPos;}
+      set{m_xPos = value;}
+    }
+
+    public float yPos
+    {
+      get{return m_yPos;}
+      set{m_yPos = value;}
+    }
 }

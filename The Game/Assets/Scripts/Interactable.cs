@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public bool hasInteracted = false; //Has been interacted with
-    public bool isFocus = false; //Is the current focus for the camera
+    bool m_hasInteracted = false; //Has been interacted with
+    bool isFocus = false; //Is the current focus for the camera
 
-    public float radius = 2f; //Radius for interactability
+    float m_radius = 2f; //Radius for interactability
 
     //Transform playerT;
     LayerMask trigger;
@@ -59,4 +59,18 @@ public class Interactable : MonoBehaviour
             }
         }
     }
+
+    public bool hasInteracted
+    {
+      get{return m_hasInteracted;}
+      set(m_hasInteracted = value;)
+    }
+
+    public float radius
+    {
+      get{return m_radius;}
+      set{m_radius = value;}
+    }
+
+    public float IsFocus() {return isFocus;}
 }

@@ -5,11 +5,11 @@ using UnityEngine;
 public class Item
 {
     //An item's identification parameters
-    public int id;
-    public string name;
-    public string desc;
+    int id;
+    string name;
+    string desc;
 
-    public Sprite icon;
+    Sprite icon;
     //public Dictionary<string, int> stats = new Dictionary<string, int>();
 
     //New item initialization

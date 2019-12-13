@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class PausingScript : MonoBehaviour
 {
-    public GameObject pauseMenu;
+    GameObject pauseMenu;
     GameObject inventoryMenu;
 
     void Awake()
     {
         inventoryMenu = GameObject.FindGameObjectWithTag("InventoryMenu");
+        pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu");
     }
 
     void Start()
@@ -36,15 +37,13 @@ public class PausingScript : MonoBehaviour
     }
 
     public void PauseGame()
-    {
-        pauseMenu = GameObject.FindWithTag("PauseMenu");
+    {  
         pauseMenu.SetActive(true);
         inventoryMenu.GetComponent<InventoryMechanics>().inventoryMenu.SetActive(false); //Prevent inventory from being used
     }
 
     public void ResumeGame()
      {
-        pauseMenu = GameObject.FindWithTag("PauseMenu");
         pauseMenu.SetActive(false);
         inventoryMenu.GetComponent<InventoryMechanics>().inventoryMenu.SetActive(true); //Allow inventory to be used again
     }
