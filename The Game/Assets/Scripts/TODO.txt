@@ -25,3 +25,5 @@ Animation for when player sprite flips
 Enemy doesn't disappear, but a corpse sprite lies there instead
 
 Controls screen
+
+Animation when getting power

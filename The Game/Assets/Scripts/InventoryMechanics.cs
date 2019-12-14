@@ -9,7 +9,7 @@ public class InventoryMechanics : MonoBehaviour
     //string[] slots = new string[12];
 
     //Inventory of player
-    public List<Item> playerItems = new List<Item>();
+    List<Item> playerItems;
 
     //Holds item database
     ItemDatabase itemDatabase;
@@ -24,7 +24,7 @@ public class InventoryMechanics : MonoBehaviour
         inventoryMenu = GameObject.FindGameObjectWithTag("InventoryMenu");
         pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu");
         inventoryMenu.SetActive(false); //Begin as not visible
-
+        playerItems = Game.current.currentPlayerData.inventory;
     }
 
     /* Update is called once per frame
@@ -47,7 +47,7 @@ public class InventoryMechanics : MonoBehaviour
     public void ToggleInvMenu()
     {
         //showInvMenu = !showInvMenu;
-        if(pauseMenu.GetComponent<PausingScript>().pauseMenu.activeSelf == false)
+        if(pauseMenu.activeSelf == false)
         {
           inventoryMenu.SetActive(!inventoryMenu.activeSelf);
         }

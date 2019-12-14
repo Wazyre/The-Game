@@ -5,13 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class NewScene : MonoBehaviour
 {
-    public Scene scene;
+    //Scene name to transfer to
+    string scene;
 
     //Player's beginning position in new scene
-    public float m_xPos;
-    public float m_yPos;
+    float m_xPos;
+    float m_yPos;
 
-    public Scene getScene() {return scene;}
+    public string getScene() {return scene;}
 
     public float xPos
     {

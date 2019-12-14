@@ -41,7 +41,7 @@ public class PlayerControlMapping : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      if(inputting) //If player input is on
+      if(m_inputting) //If player input is on
       {
           m_xMove = Input.GetAxisRaw("Horizontal");
           m_yMove = Input.GetAxis("Vertical");
@@ -130,11 +130,11 @@ public class PlayerControlMapping : MonoBehaviour
 
     public void NoInput()
     {
-        inputting = false; //Shuts off input for player
+        m_inputting = false; //Shuts off input for player
     }
     public void StartInput()
     {
-        inputting = true; //Turns on input for player
+        m_inputting = true; //Turns on input for player
     }
 
     public IEnumerator ToggleInput(float delay)

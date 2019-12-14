@@ -27,13 +27,13 @@ public class CameraFollow : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         focus = player.GetComponent<PlayerMechanics>().focus;
         offset = transform.position - player.transform.position;
-        isFollow = GetComponent<StopCamera>().isFollowing();
+        isFollow = GetComponent<StopCamera>().IsFollowing();
     }
 
     // Update is called once per frame
     void Update() {
 
-        isFollow = GetComponent<StopCamera>().isFollowing();
+        isFollow = GetComponent<StopCamera>().IsFollowing();
         if(!isFollow)
         {
             newPos = player.transform.position + offset;

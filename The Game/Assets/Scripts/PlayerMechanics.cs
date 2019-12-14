@@ -86,7 +86,7 @@ public class PlayerMechanics : MonoBehaviour
         //player = this.gameObject;
         groundCheck = transform.Find("GroundCheck");
         currentSpeed = normalSpeed;
-        control.inputting = true;
+        control.StartInput();
         groundLayer = LayerMask.GetMask("Ground");
         enemyLayer = LayerMask.GetMask("Enemy");
         interactableLayer = LayerMask.GetMask("Interactable");
@@ -249,7 +249,7 @@ public class PlayerMechanics : MonoBehaviour
         {
             Interactable interactable = col2.gameObject.GetComponent<Interactable>();
 
-            if(!stopCam.isFollowing()) //Stop the camera and focus it on the interactable
+            if(!stopCam.IsFollowing()) //Stop the camera and focus it on the interactable
             {
                 SetFocus(interactable);
                 stopCam.ChangeFollow();
@@ -272,7 +272,7 @@ public class PlayerMechanics : MonoBehaviour
         }
         else //If there is no interactable nearby anymore
         {
-            if(stopCam.isFollowing()) //Resume camera movement
+            if(stopCam.IsFollowing()) //Resume camera movement
             {
                 stopCam.ChangeFollow();
                 RemoveFocus();
@@ -284,34 +284,36 @@ public class PlayerMechanics : MonoBehaviour
         if(control.save)
         {
             Scene scene = SceneManager.GetActiveScene();
-            PlayerState.Instance.localPlayerData.sceneID = scene.buildIndex;
-            PlayerState.Instance.localPlayerData.playerPosX = transform.position.x;
-            PlayerState.Instance.localPlayerData.playerPosY = transform.position.y;
-            PlayerState.Instance.localPlayerData.playerPosZ = transform.position.z;
+            Game.current.currentPlayerData.sceneID = scene.buildIndex;
+            Game.current.currentPlayerData.playerPosX = transform.position.x;
+            Game.current.currentPlayerData.playerPosY = transform.position.y;
+            Game.current.currentPlayerData.playerPosZ = transform.position.z;
 
-            PlayerState.Instance.localPlayerData.powers = powers;
-            PlayerState.Instance.localPlayerData.power1 = power1;
-            PlayerState.Instance.localPlayerData.power2 = power2;
+            Game.current.currentPlayerData.powers = powers;
+            Game.current.currentPlayerData.power1 = power1;
+            Game.current.currentPlayerData.power2 = power2;
 
-            GlobalControl.Instance.SaveData();
+            SaveLoad.Save();
         }
 
 //-----------------------------------------------------------------
 
         if(control.load)
         {
-            GlobalControl.Instance.LoadData();
-            GlobalControl.Instance.isSceneBeingLoaded = true;
-            int whichScene = GlobalControl.Instance.LocalCopyOfData.sceneID;
+            SaveLoad.Load();
+            Game.current.isSceneBeingLoaded = true;
+            int whichScene = Game.current.currentPlayerData.sceneID;
             SceneManager.LoadScene(whichScene);
 
-            transform.position.x = GlobalControl.Instance.LocalCopyOfData.playerPosX;
-            transform.position.y = GlobalControl.Instance.LocalCopyOfData.playerPosY;
-            transform.position.z = GlobalControl.Instance.LocalCopyOfData.playerPosZ;
+            float t_x = Game.current.currentPlayerData.playerPosX;
+            float t_y = Game.current.currentPlayerData.playerPosY;
+            float t_z = Game.current.currentPlayerData.playerPosZ;
 
-            powers = GlobalControl.Instance.LocalCopyOfData.powers;
-            power1 = GlobalControl.Instance.LocalCopyOfData.power1;
-            power2 = GlobalControl.Instance.LocalCopyOfData.power2;
+            transform.position = new Vector3(t_x, t_y, t_z);
+
+            powers = Game.current.currentPlayerData.powers;
+            power1 = Game.current.currentPlayerData.power1;
+            power2 = Game.current.currentPlayerData.power2;
         }
 
 //-----------------------------------------------------------------
@@ -402,7 +404,7 @@ public class PlayerMechanics : MonoBehaviour
         if(obj.tag == "Shrine")
         {
             //PLAY SCENE
-            Activate(obj.GetComponent<ActivatePower>().power);
+            Activate(obj.GetComponent<ActivatePower>().GetPower());
         }
         else if(obj.tag == "Puddle")
         {

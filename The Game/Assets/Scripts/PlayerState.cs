@@ -6,8 +6,8 @@ using System.IO;
 
 public class PlayerState : MonoBehaviour
 {
-    Text healthText = "";
-    Text diseaseText = "";
+    Text healthText;
+    Text diseaseText;
 
     float maxHealth = 100.0f;
     //float currentHealth;
@@ -27,16 +27,21 @@ public class PlayerState : MonoBehaviour
 
     void Awake()
     {
+        Game.current = new Game();
+        healthText = GameObject.Find("HealthText").GetComponent<Text>();
+        diseaseText = GameObject.Find("DiseaseText").GetComponent<Text>();
         anim = GetComponent<Animator>();
         healthBar = GameObject.FindGameObjectWithTag("HealthBar").GetComponent<Slider>();
         diseaseBar = GameObject.FindGameObjectWithTag("DiseaseBar").GetComponent<Slider>();
-        localPlayerData = GlobalControl.Instance.savedPlayerData;
+        localPlayerData = Game.current.currentPlayerData;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         //StartCoroutine(StayOnHazard());
+        healthText.text = "";
+        diseaseText.text = "";
         healthBar.value = CalculateHealthBar();
         diseaseBar.value = CalculateDiseaseBar();
     }

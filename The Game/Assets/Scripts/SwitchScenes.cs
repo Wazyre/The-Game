@@ -57,7 +57,7 @@ public class SwitchScenes : MonoBehaviour
         StartCoroutine(fade.FadeImageInOut(fps, fps, blackScreen, delay)); //Begins fade to black
         StartCoroutine(control.ToggleInput(delay*2));
         player.transform.position = new Vector3(xPos, yPos, 0); //Changes player's position in new scene
-        PlayerState.Instance.SavePlayer(); //Save data
+        SaveLoad.Save(); //Save data
         SceneManager.LoadScene(scene); //Load new scene
     }
 }

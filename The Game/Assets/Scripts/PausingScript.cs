@@ -37,15 +37,15 @@ public class PausingScript : MonoBehaviour
     }
 
     public void PauseGame()
-    {  
+    {
         pauseMenu.SetActive(true);
-        inventoryMenu.GetComponent<InventoryMechanics>().inventoryMenu.SetActive(false); //Prevent inventory from being used
+        inventoryMenu.SetActive(false); //Prevent inventory from being used
     }
 
     public void ResumeGame()
      {
         pauseMenu.SetActive(false);
-        inventoryMenu.GetComponent<InventoryMechanics>().inventoryMenu.SetActive(true); //Allow inventory to be used again
+        inventoryMenu.SetActive(true); //Allow inventory to be used again
     }
 
     //Allows pausing game using external scripts

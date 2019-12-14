@@ -52,10 +52,10 @@ public class Interactable : MonoBehaviour
 
         if(isFocus)
         {
-            float distance = Vector2.Distance(player.position, transform.position);
+            float distance = Vector2.Distance(player.transform.position, transform.position);
             if(distance <= radius) //THIS WILL ALWAYS BE TRUE>>>WHAT?
             {
-
+              radius++;
             }
         }
     }
@@ -63,7 +63,7 @@ public class Interactable : MonoBehaviour
     public bool hasInteracted
     {
       get{return m_hasInteracted;}
-      set(m_hasInteracted = value;)
+      set{m_hasInteracted = value;}
     }
 
     public float radius
@@ -72,5 +72,5 @@ public class Interactable : MonoBehaviour
       set{m_radius = value;}
     }
 
-    public float IsFocus() {return isFocus;}
+    public bool IsFocus() {return isFocus;}
 }
