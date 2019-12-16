@@ -62,7 +62,7 @@ public class PlayerMechanics : MonoBehaviour
     BoxCollider2D pCol; //The collider of the player
 
     PlayerControlMapping control;
-    StopCamera stopCam;
+    CameraFollow camFol;
     public Interactable focus;
 
     void Awake()
@@ -70,7 +70,7 @@ public class PlayerMechanics : MonoBehaviour
       cam = GameObject.FindGameObjectWithTag("MainCamera");
       interactText = GameObject.Find("Interact").GetComponent<Text>();
       inventory = GameObject.FindGameObjectWithTag("InventoryMenu");
-      stopCam = cam.GetComponent<StopCamera>();
+      camFol = cam.GetComponent<CameraFollow>();
       rb = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();
       pCol = GetComponent<BoxCollider2D>();
@@ -187,12 +187,12 @@ public class PlayerMechanics : MonoBehaviour
         if(rb.velocity.y > tempVelocity)
         {
             anim.SetBool("JumpUp", true);
-            anim.SetBool("JumpDown", false);
+            anim.SetBool("Fall", false);
         }
         else if(rb.velocity.y < tempVelocity)
         {
             anim.SetBool("JumpUp", false);
-            anim.SetBool("JumpDown", true);
+            anim.SetBool("Fall", true);
         }
 
         //Carries velocity to compare vertical distnace when jumping
@@ -249,10 +249,10 @@ public class PlayerMechanics : MonoBehaviour
         {
             Interactable interactable = col2.gameObject.GetComponent<Interactable>();
 
-            if(!stopCam.IsFollowing()) //Stop the camera and focus it on the interactable
+            if(!camFol.IsFollowing()) //Stop the camera and focus it on the interactable
             {
                 SetFocus(interactable);
-                stopCam.ChangeFollow();
+                camFol.ChangeFollow();
             }
 
             if(interactable.IsFocus())
@@ -272,9 +272,9 @@ public class PlayerMechanics : MonoBehaviour
         }
         else //If there is no interactable nearby anymore
         {
-            if(stopCam.IsFollowing()) //Resume camera movement
+            if(camFol.IsFollowing()) //Resume camera movement
             {
-                stopCam.ChangeFollow();
+                camFol.ChangeFollow();
                 RemoveFocus();
             }
         }
@@ -338,7 +338,7 @@ public class PlayerMechanics : MonoBehaviour
     }*/
 
 //-----------------------------------------------------------------
-
+    //Remove this into appropriate file
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.tag == "Spikes")
@@ -401,6 +401,7 @@ public class PlayerMechanics : MonoBehaviour
     //PLay out different stuff based on interactable interacted with
     void Interact(GameObject obj)
     {
+        //obj.Activate();
         if(obj.tag == "Shrine")
         {
             //PLAY SCENE

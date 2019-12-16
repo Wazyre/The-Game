@@ -67,15 +67,13 @@
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.2.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.WindModule.dll"
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.2.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll"
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.2.16f1/Editor/Data/Managed/UnityEditor.dll"
-/reference:Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
-/reference:Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll
-/reference:Library/ScriptAssemblies/Unity.TextMeshPro.dll
-/reference:Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll
 /reference:Library/ScriptAssemblies/Unity.Timeline.Editor.dll
 /reference:Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Editor.dll
 /reference:Library/ScriptAssemblies/Unity.VSCode.Editor.dll
+/reference:Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
 /reference:Library/ScriptAssemblies/UnityEngine.UI.dll
 /reference:Library/ScriptAssemblies/Unity.Timeline.dll
+/reference:Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll
 /reference:Library/ScriptAssemblies/com.unity.multiplayer-weaver.Editor.dll
 /reference:Library/ScriptAssemblies/UnityEngine.XR.LegacyInputHelpers.dll
 /reference:Library/ScriptAssemblies/Unity.Rider.Editor.dll
@@ -83,6 +81,8 @@
 /reference:Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll
 /reference:Library/ScriptAssemblies/UnityEditor.SpatialTracking.dll
 /reference:Library/ScriptAssemblies/UnityEngine.SpatialTracking.dll
+/reference:Library/ScriptAssemblies/Unity.TextMeshPro.dll
+/reference:Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll
 /reference:Library/ScriptAssemblies/UnityEditor.XR.LegacyInputHelpers.dll
 /reference:Library/ScriptAssemblies/UnityEditor.UI.dll
 /reference:Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Runtime.dll
@@ -301,10 +301,6 @@
 /define:ENABLE_LEGACY_INPUT_MANAGER
 /define:CSHARP_7_OR_LATER
 /define:CSHARP_7_3_OR_NEWER
-Assets\dup\Character.cs
-Assets\dup\Game.cs
-Assets\dup\Gameplay.cs
-Assets\dup\MainMenu.cs
 "Assets\Resources\Realistic Hail Set\Demo Scene\Scripts\DemoSceneController.cs"
 Assets\Scripts\ActivatePower.cs
 Assets\Scripts\BetweenLevels.cs

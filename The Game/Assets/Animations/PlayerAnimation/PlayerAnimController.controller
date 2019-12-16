@@ -51,7 +51,13 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 1
     m_Controller: {fileID: 0}
-  - m_Name: JumpDown
+  - m_Name: isFalling
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 1
+    m_Controller: {fileID: 0}
+  - m_Name: isSitting
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -312,7 +318,7 @@ AnimatorStateTransition:
     m_ConditionEvent: isJumping
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: JumpDown
+    m_ConditionEvent: isFalling
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102674539342756192}
@@ -418,7 +424,7 @@ AnimatorStateTransition:
     m_ConditionEvent: JumpUp
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: JumpDown
+    m_ConditionEvent: isFalling
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102887786387106136}
@@ -675,7 +681,7 @@ AnimatorStateMachine:
     m_Position: {x: -180, y: 264, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102956948601752284}
-    m_Position: {x: 540, y: 156, z: 0}
+    m_Position: {x: 300, y: 170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102001085398742270}
     m_Position: {x: 96, y: 420, z: 0}

@@ -55,7 +55,7 @@ public class Interactable : MonoBehaviour
             float distance = Vector2.Distance(player.transform.position, transform.position);
             if(distance <= radius) //THIS WILL ALWAYS BE TRUE>>>WHAT?
             {
-              radius++;
+              radius++; //Stub
             }
         }
     }
