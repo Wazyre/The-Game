@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Interactable : MonoBehaviour
 {
     bool m_hasInteracted = false; //Has been interacted with
@@ -9,7 +10,6 @@ public class Interactable : MonoBehaviour
 
     float m_radius = 2f; //Radius for interactability
 
-    //Transform playerT;
     LayerMask trigger;
     GameObject player;
 
@@ -18,18 +18,6 @@ public class Interactable : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         trigger = LayerMask.GetMask("Player");
     }
-
-    /*public void OnFocused(Transform playerTransform)
-    {
-        isFocus = true;
-        //playerT = playerTransform;
-    }
-
-    public void OnDefocused()
-    {
-        isFocus = false;
-        //playerT = null;
-    }*/
 
     void OnDrawGizmos()
     {
@@ -53,10 +41,10 @@ public class Interactable : MonoBehaviour
         if(isFocus)
         {
             float distance = Vector2.Distance(player.transform.position, transform.position);
-            if(distance <= radius) //THIS WILL ALWAYS BE TRUE>>>WHAT?
+            /*if(distance <= radius) //THIS WILL ALWAYS BE TRUE>>>WHAT?
             {
               radius++; //Stub
-            }
+            }*/
         }
     }
 
@@ -73,4 +61,9 @@ public class Interactable : MonoBehaviour
     }
 
     public bool IsFocus() {return isFocus;}
+
+    public virtual void Activate()
+    {
+      return;
+    }
 }

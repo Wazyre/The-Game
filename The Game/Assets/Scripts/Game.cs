@@ -13,7 +13,6 @@ public class Game
   public Game()
   {
     currentPlayerData = new PlayerStatistics();
-
   }
 
 }

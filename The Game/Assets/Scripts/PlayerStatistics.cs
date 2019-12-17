@@ -8,6 +8,8 @@ public class PlayerStatistics
 {
     float m_hp = 100;
     float m_disease = 0;
+    float m_maxHealth = 100;
+    float m_maxDisease = 0;
 
     float m_playerPosX = 0;
     float m_playerPosY = 0;
@@ -20,7 +22,10 @@ public class PlayerStatistics
     string m_power2 = "";
     List<Item> m_inventory = new List<Item>{};
 
-    Dictionary<string, bool> m_powers = new Dictionary<string, bool>{};
+    Dictionary<string, bool> m_powers = new Dictionary<string, bool>
+    {
+        {"Claw", false}, {"Shotgun", false}, {"Scythe", false}, {"Spring", false}
+    };
 
     public float hp
     {
@@ -31,6 +36,16 @@ public class PlayerStatistics
     {
       get{return m_disease;}
       set{m_disease = value;}
+    }
+    public float maxHealth
+    {
+      get{return m_maxHealth;}
+      set{m_maxHealth = value;}
+    }
+    public float maxDisease
+    {
+      get{return m_maxDisease;}
+      set{m_maxDisease = value;}
     }
     public float playerPosX
     {
@@ -74,7 +89,7 @@ public class PlayerStatistics
     }
     public Dictionary<string, bool> powers
     {
-      get{return powers;}
-      set{powers = value;}
+      get{return m_powers;}
+      set{m_powers = value;}
     }
 }

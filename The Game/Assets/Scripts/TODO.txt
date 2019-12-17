@@ -4,6 +4,8 @@ Deal with private and public members
 
 Remove or change parallax script heavily
 
+Make camera stop at level end, not arbitrary number
+
 Add enemy follow player script
 
 Ability to change controls

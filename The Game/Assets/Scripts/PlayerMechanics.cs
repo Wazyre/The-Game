@@ -187,12 +187,12 @@ public class PlayerMechanics : MonoBehaviour
         if(rb.velocity.y > tempVelocity)
         {
             anim.SetBool("JumpUp", true);
-            anim.SetBool("Fall", false);
+            anim.SetBool("isFalling", false);
         }
         else if(rb.velocity.y < tempVelocity)
         {
             anim.SetBool("JumpUp", false);
-            anim.SetBool("Fall", true);
+            anim.SetBool("isFalling", true);
         }
 
         //Carries velocity to compare vertical distnace when jumping
@@ -261,7 +261,7 @@ public class PlayerMechanics : MonoBehaviour
 
                 if(control.useItem) //If E is pressed
                 {
-                    Interact(col2.gameObject); //Let the interactable do its thing
+                    interactable.Activate(); //Activate the interactable
                 }
             }
 
@@ -398,26 +398,6 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
 
-    //PLay out different stuff based on interactable interacted with
-    void Interact(GameObject obj)
-    {
-        //obj.Activate();
-        if(obj.tag == "Shrine")
-        {
-            //PLAY SCENE
-            Activate(obj.GetComponent<ActivatePower>().GetPower());
-        }
-        else if(obj.tag == "Puddle")
-        {
-            GetComponent<PlayerState>().RemoveDisease();
-        }
-        else if(obj.tag == "Bench")
-        {
-            GetComponent<PlayerState>().Heal();
-            anim.SetBool("isSitting", true);
-        }
-    }
-
     //Change camera focus to interactable
     void SetFocus(Interactable newFocus)
     {
@@ -428,18 +408,6 @@ public class PlayerMechanics : MonoBehaviour
     void RemoveFocus()
     {
         focus = null;
-    }
-
-    //Activate a new power for the player
-    void Activate(string power)
-    {
-        foreach(KeyValuePair<string, bool> item in powers)
-        {
-            if(power == item.Key)
-            {
-                powers[item.Key] = true;
-            }
-        }
     }
 
 }
