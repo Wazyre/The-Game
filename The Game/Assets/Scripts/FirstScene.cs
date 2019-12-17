@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class FirstScene : MonoBehaviour
 {
     float fps = 3f;
-    float delay = 5f;
+    float delay = 1f;
 
     bool ran = false;
 

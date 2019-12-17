@@ -11,7 +11,7 @@ public class SwitchScenes : MonoBehaviour
     float radius = 1f;
 
     Fade fade;
-    NewScene newScene;
+    SceneData newScene;
     PlayerControlMapping control;
 
     //GameObject blackScreen;
@@ -46,7 +46,7 @@ public class SwitchScenes : MonoBehaviour
         //This is for doors, entryways...etc. NOT EDGE OF SCREEN TRANSITION
         if(col != null && Input.GetKeyDown("E")) //If player is there and pressing E
         {
-            newScene = col.GetComponent<NewScene>();
+            newScene = col.GetComponent<SceneData>();
             ChangeScene(newScene.getScene(), newScene.xPos, newScene.yPos);
         }
     }

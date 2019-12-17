@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Enemy : MonoBehaviour
 {
     int m_currentHealth;
-    int m_maxHealth = 1;
-    int m_damage = 1;
-    int m_range = 1;
+    int m_maxHealth;
+    int m_damage;
+    int m_range;
+
+    float m_speed;
 
     Rigidbody2D rb;
 
@@ -47,6 +50,12 @@ public class Enemy : MonoBehaviour
     public int range
     {
       get{return m_range;}
+    }
+
+    public float speed
+    {
+      get{return m_speed;}
+      set{m_speed = value;}
     }
 
     void TakeDamage(int damage)

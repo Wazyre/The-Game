@@ -47,7 +47,7 @@ public class PlayerMechanics : MonoBehaviour
 
     //GameObject player;
     GameObject cam;
-    GameObject inventory;
+    GameObject inventoryMenu;
     Transform groundCheck;
 
     Animator anim;  //Player's animator
@@ -69,7 +69,7 @@ public class PlayerMechanics : MonoBehaviour
     {
       cam = GameObject.FindGameObjectWithTag("MainCamera");
       interactText = GameObject.Find("Interact").GetComponent<Text>();
-      inventory = GameObject.FindGameObjectWithTag("InventoryMenu");
+      inventoryMenu = GameObject.FindGameObjectWithTag("InventoryMenu");
       camFol = cam.GetComponent<CameraFollow>();
       rb = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();
@@ -143,12 +143,12 @@ public class PlayerMechanics : MonoBehaviour
         //Signals if the player is on the ground or not
         RaycastHit2D ground = Physics2D.Raycast(groundCheck.position, -transform.up, groundCheckDis, groundLayer);
 
-        if(ground != null) //If the player is standing on ground
+        if(ground) //If the player is standing on ground
         {
             grounded = true;
             inAir = false;
             anim.SetBool("isJumping", false);
-            anim.SetBool("isIdle", true);
+            //anim.SetBool("isIdle", true);
         }
 
         //Animation and forces for first jump
@@ -189,7 +189,7 @@ public class PlayerMechanics : MonoBehaviour
             anim.SetBool("JumpUp", true);
             anim.SetBool("isFalling", false);
         }
-        else if(rb.velocity.y < tempVelocity)
+        else if(rb.velocity.y < tempVelocity && rb.velocity.y != 0)
         {
             anim.SetBool("JumpUp", false);
             anim.SetBool("isFalling", true);
@@ -321,7 +321,7 @@ public class PlayerMechanics : MonoBehaviour
         //Toggles inventory screen when its button is pressed
         if(control.inventory)
         {
-            inventory.GetComponent<InventoryMechanics>().ToggleInvMenu();
+            inventoryMenu.GetComponent<InventoryMechanics>().ToggleInvMenu();
         }
 
 //-----------------------------------------------------------------

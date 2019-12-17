@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NewScene : MonoBehaviour
+//Holds a scene's data
+public class SceneData : MonoBehaviour
 {
     //Scene name to transfer to
     string scene;

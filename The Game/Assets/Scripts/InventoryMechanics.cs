@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class InventoryMechanics : MonoBehaviour
 {
-    //Toggles inventory menu visibility
-    //bool showInvMenu = false;
-    //string[] slots = new string[12];
-
     //Inventory of player
     List<Item> playerItems;
 
     //Holds item database
-    ItemDatabase itemDatabase;
+    ItemDatabase itemDatabase = new ItemDatabase();
 
     //Holds gamePbjects of menus
     GameObject inventoryMenu;
@@ -27,22 +23,6 @@ public class InventoryMechanics : MonoBehaviour
         playerItems = Game.current.currentPlayerData.inventory;
     }
 
-    /* Update is called once per frame
-    void Update()
-    {
-        if(pauseMenu.GetComponent<PausingScript>().pauseMenu.activeSelf == false)
-        {
-            if(showInvMenu)
-            {
-                inventoryMenu.SetActive(true);
-            }
-            else
-            {
-                inventoryMenu.SetActive(false);
-            }
-        }
-
-    }*/
     //Toggles inventory menu visibility
     public void ToggleInvMenu()
     {

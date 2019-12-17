@@ -1,6 +1,6 @@
 Create Item database
 
-Deal with private and public members
+Deal with private and public members -
 
 Remove or change parallax script heavily
 
@@ -12,11 +12,15 @@ Ability to change controls
 
 Add falling animation
 
-Work on savedata location
+Work on savedata location -
 
-Is BetweenLevels script needed?
+Is BetweenLevels script needed? -
 
-Don't let inventory be erased between loads; Add player items to global control
+Is PlayerAttacks script needed?
+
+Find way to assign variables to different levels/shrines
+
+Don't let inventory be erased between loads; Add player items to global control -
 
 Add save and load text when that happens
 
