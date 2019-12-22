@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class NPC : MonoBehaviour
@@ -11,8 +12,8 @@ public class NPC : MonoBehaviour
 
     Animator animator;
     GameObject player;
+    GameObject interactText;
     LayerMask trigger;
-    Text interactText;
 
     void Start()
     {
@@ -20,12 +21,12 @@ public class NPC : MonoBehaviour
         animator.Play("Idle"); //Begin with Idle animation
         player = GameObject.FindGameObjectWithTag("Player");
         trigger = LayerMask.GetMask("Player");
-        interactText = GameObject.Find("Interact").GetComponent<Text>();
+        interactText = GameObject.Find("Interact");
     }
 
     void Update()
     {
-        Collider2D player = Physics2D.OverlapCircle(transform.position, radius, trigger);
+        Collider2D player = Physics2D.OverlapCircle(transform.position, interactRadius, trigger);
 
         if(player != null) //If the player is within the radius
         {
