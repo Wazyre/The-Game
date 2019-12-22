@@ -26,10 +26,12 @@ Add save and load text when that happens
 
 Play scenes when getting powers
 
+Create intro/main menu screen
+
 Animation for when player sprite flips
 
 Enemy doesn't disappear, but a corpse sprite lies there instead
 
 Controls screen
 
-Animation when getting power
+Multiple layers for fore/background scenery

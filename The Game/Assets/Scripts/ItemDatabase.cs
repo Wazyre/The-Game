@@ -15,11 +15,11 @@ public class ItemDatabase : MonoBehaviour
     void BuildDatabase()
     {
         items = new List<Item>{
-            new Item(0, "Healing Potion", "A potion that heals the player"),
-            new Item(1, "", ""),
-            new Item(2, "", ""),
-            new Item(3, "", ""),
-            new Item(4, "", ""),
+            new Item(0, "Healing Potion", "A potion that heals the player."),
+            new Item(1, "Health Shard", "Adds a heart when three have been gathered."),
+            new Item(2, "Disease Potion", "A potion that reduces the amount of disease a player has."),
+            new Item(3, "Coin", "A coin that is worth 1 money."),
+            new Item(4, "Double Coin", "A coin that is worth 5 money."),
             new Item(5, "", ""),
             new Item(6, "", ""),
             new Item(7, "", ""),
