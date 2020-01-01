@@ -14,6 +14,7 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] float bigJumpSpeed = 200f;
     [SerializeField] float smallJumpMod = 2f;
     [SerializeField] float fallingMod = 2.5f;
+    [SerializeField] float wallJumpLerp = 10f;
     [SerializeField] bool inAir = false;
 
     [Space]
@@ -33,6 +34,12 @@ public class PlayerMechanics : MonoBehaviour
     bool wallGrab;
     bool wallJumped;
     bool isDashing;
+    bool isAttacking;
+    bool isWalking;
+    bool isJumping;
+    bool isFalling;
+    bool isCrouching;
+    bool isIdle;
     bool hasDashed;
 
     [Space]
@@ -65,7 +72,6 @@ public class PlayerMechanics : MonoBehaviour
     GameObject cam;
     GameObject inventoryMenu;
 
-    Animator anim;  //Player's animator
     Rigidbody2D rb; //Player's rigidbody
     SpriteRenderer playerSprite;
 
@@ -90,7 +96,6 @@ public class PlayerMechanics : MonoBehaviour
       inventoryMenu = GameObject.FindGameObjectWithTag("InventoryMenu");
       camFol = cam.GetComponent<CameraFollow>();
       rb = GetComponent<Rigidbody2D>();
-      anim = GetComponent<Animator>();
       pCol = GetComponent<BoxCollider2D>();
       playerSprite = GetComponent<SpriteRenderer>();
       control = GetComponent<PlayerControlMapping>();
@@ -151,19 +156,30 @@ public class PlayerMechanics : MonoBehaviour
 
     void Walk()
     {
-        //Calculates velocity based on speed and direction faced
-        rb.velocity = new Vector2(control.xMove*currentSpeed, rb.velocity.y);
-
-        //Play out appropraiate animations
-        if(control.xMove != 0 && anim.GetBool("isAttacking") == false && !crouching && !inAir)
+        if(!control.inputting)
         {
-          anim.SetBool("isRunning", true);
-          anim.SetBool("isIdle", false);
+          return;
+        }
+
+        if(!wallJumped)
+        {
+            //Calculates velocity based on speed and direction faced
+            rb.velocity = new Vector2(control.xMove*normalSpeed, rb.velocity.y);
         }
         else
         {
-          anim.SetBool("isRunning", false);
-          anim.SetBool("isIdle", true);
+            rb.velocity = Vector2.Lerp(rb.velocity, (new Vector2(control.xMove * normalSpeed, rb.velocity.y)), wallJumpLerp * Time.deltaTime);
+        }
+
+
+        //Play out appropraiate animations
+        if(control.xMove != 0 && !isAttacking && !crouching && !inAir)
+        {
+          isWalking = true;
+        }
+        else
+        {
+          isWalking = false;
         }
     }
 
@@ -173,12 +189,12 @@ public class PlayerMechanics : MonoBehaviour
         if(control.run && dashDelay == 0)
         {
             dashDelay = 1.0f; //Amount of delay in seconds between dashes
-            anim.SetBool("isDashing", true); //Dashing animation on
+            isDashing = true; //Dashing animation on
             rb.AddForce(new Vector2(rb.velocity.x*300, 0)); //Dashing force
         }
         else
         {
-            anim.SetBool("isDashing", false); //Dashing animation off
+            isDashing = false; //Dashing animation off
         }
 
         //Counts down time between dashes
@@ -194,15 +210,18 @@ public class PlayerMechanics : MonoBehaviour
 
     void Jump()
     {
+        if(control.jumpOn)
+        {
+          if(rb.velocity.y < 0)
+          {
+              rb.velocity += Vector2.up * Physics2D.gravity.y * (fallingMod - 1) * Time.deltaTime;
+          }
+          else if(rb.velocity.y > 0 && !control.jumpOn)
+          {
+              rb.velocity += Vector2.up * Physics2D.gravity.y * (smallJumpMod - 1) * Time.deltaTime;
+          }
+        }
 
-        if(rb.velocity.y < 0)
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallingMod - 1) * Time.deltaTime;
-        }
-        else if(rb.velocity.y > 0 && !control.jumpOn)
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (smallJumpMod - 1) * Time.deltaTime;
-        }
         /*
         //Animation and forces for first jump
         if(control.jumpOn && grounded)
@@ -257,18 +276,17 @@ public class PlayerMechanics : MonoBehaviour
         //Animations and controls for crouching, with no crouching while in the air
         if(control.crouch && control.jumpOff && !inAir)
         {
-            anim.SetBool("isCrouching", true);
-            anim.SetBool("isIdle", false);
-            anim.SetBool("isRunning", false);
+            isCrouching = true;
+            isWalking = false;
             crouching = true;
         }
         else
         {
-          anim.SetBool("isCrouching", false);
+          isCrouching = false;
           crouching = false;
         }
 
-        if(anim.GetBool("isCrouching"))
+        if(isCrouching)
         {
             rb.velocity *= crouchingMod; //Change speed to crouching speed
         }
@@ -329,12 +347,12 @@ public class PlayerMechanics : MonoBehaviour
         }
         else
         {
-            anim.SetBool("isAttacking", false);
+            isAttacking = false;
             return;
         }
 
         timeSinceAttack = 0;
-        anim.SetBool("isAttacking", true);  //CHANGE TO SPECIFIC POWER ANIMATION
+        isAttacking = true;  //CHANGE TO SPECIFIC POWER ANIMATION
         RaycastHit2D[] hits;
 
         if(flipCol) //If facing right
@@ -359,7 +377,7 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
 
-    void Inventory() 
+    void Inventory()
     {
         //Toggles inventory screen when its button is pressed
         if(control.inventory)

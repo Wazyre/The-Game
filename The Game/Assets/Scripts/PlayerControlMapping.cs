@@ -5,21 +5,21 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerControlMapping : MonoBehaviour
 {
-    public float m_xMove; //Horizontal movement
-    public float m_yMove; //Vertical movement
+    float m_xMove; //Horizontal movement
+    float m_yMove; //Vertical movement
 
-    public bool m_jumpOn;
-    public bool m_jumpOff;
-    public bool m_run;
-    public bool m_useItem;
-    public bool m_attack1;
-    public bool m_attack2;
-    public bool m_heal;
-    public bool m_crouch;
-    public bool m_save;
-    public bool m_load;
-    public bool m_inventory;
-    public bool m_inputting = true; //Player can input or not
+    bool m_jumpOn;
+    bool m_jumpOff;
+    bool m_run;
+    bool m_useItem;
+    bool m_attack1;
+    bool m_attack2;
+    bool m_heal;
+    bool m_crouch;
+    bool m_save;
+    bool m_load;
+    bool m_inventory;
+    bool m_inputting = true; //Player can input or not
 
     // Start is called before the first frame update
     void Awake()
@@ -125,7 +125,10 @@ public class PlayerControlMapping : MonoBehaviour
       get{return m_inventory;}
     }
 
-
+    public bool inputting
+    {
+      get{return m_inputting;}
+    }
 
 
 
