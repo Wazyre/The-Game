@@ -6,54 +6,66 @@ using System.IO;
 using UnityEngine.SceneManagement;
 using System;
 
-public class PlayerMechanics : MonoBehaviour
+[System.Serializable]
+public class PlayerMechanics : PlayerControlMapping
 {
     //float hMove;
     //Speeds and jump strengths of player
-    float bigJumpForce = 200f;
-    float smallJumpForce = 50f;
-    float normalSpeed = 10f;
+    [Header("Vertical Movement")]
+    [SerializeField] float bigJumpSpeede = 200f;
+    [SerializeField] float smallJumpSpeed = 50f;
+    [SerializeField] float fallingSpeed = 50f;
+    [SerializeField] bool inAir = false;
+
     //float runningSpeed = 15f;
-    float crouchingSpeed = 0.5f;
-    float currentSpeed;
+    [Header("Horizontal Movement")]
+    [SerializeField] float normalSpeed = 15f;
+    [SerializeField] float crouchingMod = 0.5f;
+    [SerializeField] float dashDelay = 0.5f; //Delay between each dash
+    [SerializeField] float currentSpeed;
+    [SerializeField] bool crouching = false;
 
     //float hitRange = 2f;
     float tempVelocity;
-    float dashDelay = 0.0f;
+
     float interactRadius = 15f;
-    float groundCheckDis = 0.11f; //Distane to check for ground
 
     //Check conditions of player
-    bool grounded = true;
-    bool inAir = false;
-    bool crouching = false;
+    [Header("Ground Check")]
+    [SerializeField] bool grounded = true;
+    [SerializeField] float groundCheckY = 0.11f; //Distane to check for ground
+    [SerializeField] float groundCheckX = 1f;
+    [SerializeField] Transform groundTransform
+    [SerializeField] LayerMask groundLayer
+
     bool flipCol = true; //True if facing right, false if facing left
 
-    string power1;
-    string power2;
+    [Header("Attacking")]
+    [SerializeField] string power1;
+    [SerializeField] string power2;
+    [SerializeField] string currentPower; //Power used at moment of attack
 
     //Dictionary of "discovered" and enabled powers
-    Dictionary<string, bool> powers = new Dictionary<string, bool>
+    [SerializeField] Dictionary<string, bool> powers = new Dictionary<string, bool>
     {
         {"Claw", false}, {"Shotgun", false}, {"Scythe", false}, {"Spring", false}
     };
 
     //For power stats, first int is damage followed by range, knockback...
-    Dictionary<string, List<int>> powerStats = new Dictionary<string, List<int>>
+    [SerializeField] Dictionary<string, List<int>> powerStats = new Dictionary<string, List<int>>
     {
         {"Claw", new List<int>(){10, 2, 0}}, {"Shotgun", new List<int>(){30, 5, 5}},
         {"Scythe", new List<int>(){20, 4, 2}}, {"Spring", new List<int>(){0, 0, 0}}
     };
+    [SerializeField] float timeSinceAttack = 0f;
+    [SerializeField] float attackDelay = 1f;
 
-    //GameObject player;
     GameObject cam;
     GameObject inventoryMenu;
-    Transform groundCheck;
 
     Animator anim;  //Player's animator
     Rigidbody2D rb; //Player's rigidbody
     SpriteRenderer playerSprite;
-    LayerMask groundLayer;
     LayerMask enemyLayer;
     LayerMask interactableLayer;
 
@@ -84,7 +96,7 @@ public class PlayerMechanics : MonoBehaviour
     void Start()
     {
         //player = this.gameObject;
-        groundCheck = transform.Find("GroundCheck");
+        groundTransform = transform.Find("groundTransform");
         currentSpeed = normalSpeed;
         control.StartInput();
         groundLayer = LayerMask.GetMask("Ground");
@@ -97,13 +109,83 @@ public class PlayerMechanics : MonoBehaviour
     void Update()
     {
         FlipSprite();
+        isGrounded();
+        Walk();
+        Run();
+        Jump();
+        Crouch();
+        Interact();
+        Attack();
+        Inventory();
+        SavenLoad();
 
+    }
+
+    /*void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Puddle")
+        {
+            groundTransform = true;
+        }
+    }*/
+
+//-----------------------------------------------------------------
+    //Remove this into appropriate file
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.tag == "Spikes")
+        {
+            //Adds a knockback to player if steps on spikes
+            rb.AddForce(new Vector2(rb.velocity.x*-100, rb.velocity.y*-100));
+            //rb.AddForce(new Vector2(, rb.velocity.y));
+        }
+    }
+
+    //Flips sprite depending on direction player is facing
+    void FlipSprite()
+    {
+        if (control.xMove < 0) //If moving left
+        {
+            playerSprite.flipX = true;
+
+            if(flipCol)
+            {
+                pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
+                flipCol = false;
+            }
+        }
+        else if (control.xMove > 0) //If moving right
+        {
+            playerSprite.flipX = false;
+
+            if(!flipCol)
+            {
+                pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
+                flipCol = true;
+            }
+        }
+    }
+
+    void isGrounded()
+    {
+        RaycastHit2D ground = Physics2D.Raycast(groundTransform.position, -transform.up, groundCheckY, groundLayer);
+
+        if(ground) //If the player is standing on ground
+        {
+            grounded = true;
+            inAir = false;
+            anim.SetBool("isJumping", false);
+            //anim.SetBool("isIdle", true);
+        }
+    }
+
+    void Walk()
+    {
         //Calculates velocity based on speed and direction faced
-        Vector2 moveVelocity = new Vector2(control.xMove*currentSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(control.xMove*currentSpeed, rb.velocity.y);
 
-        rb.velocity = moveVelocity;
-
-        if(control.xMove != 0 && anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") == false && !crouching)
+        //Play out appropraiate animations
+        if(control.xMove != 0 && anim.GetBool("isAttacking") == false && !crouching && !inAir)
         {
           anim.SetBool("isRunning", true);
           anim.SetBool("isIdle", false);
@@ -113,9 +195,10 @@ public class PlayerMechanics : MonoBehaviour
           anim.SetBool("isRunning", false);
           anim.SetBool("isIdle", true);
         }
+    }
 
-//---------------------------------------------------------------
-
+    void Run()
+    {
         //If running, the player gets a dash with a delay of 1 second
         if(control.run && dashDelay == 0)
         {
@@ -137,20 +220,10 @@ public class PlayerMechanics : MonoBehaviour
         {
             dashDelay = 0.0f;
         }
+    }
 
-//-------------------------------------------------------------
-
-        //Signals if the player is on the ground or not
-        RaycastHit2D ground = Physics2D.Raycast(groundCheck.position, -transform.up, groundCheckDis, groundLayer);
-
-        if(ground) //If the player is standing on ground
-        {
-            grounded = true;
-            inAir = false;
-            anim.SetBool("isJumping", false);
-            //anim.SetBool("isIdle", true);
-        }
-
+    void Jump()
+    {
         //Animation and forces for first jump
         if(control.jumpOn && grounded)
         {
@@ -197,30 +270,10 @@ public class PlayerMechanics : MonoBehaviour
 
         //Carries velocity to compare vertical distnace when jumping
         tempVelocity = rb.velocity.y;
+    }
 
-//----------------------------------------------------------------
-
-        if(control.attack1 && !control.crouch)
-        {
-            anim.SetBool("isAttacking", true);
-            Attack(power1);
-        }
-        else
-        {
-            anim.SetBool("isAttacking", false);
-        }
-        if(control.attack2 && !control.crouch)
-        {
-            anim.SetBool("isAttacking", true);
-            Attack(power2);
-        }
-        else
-        {
-            anim.SetBool("isAttacking", false);
-        }
-
-//----------------------------------------------------------------
-
+    void Crouch()
+    {
         //Animations and controls for crouching, with no crouching while in the air
         if(control.crouch && control.jumpOff && !inAir)
         {
@@ -239,9 +292,10 @@ public class PlayerMechanics : MonoBehaviour
         {
             rb.velocity *= crouchingSpeed; //Change speed to crouching speed
         }
+    }
 
-//-----------------------------------------------------------------
-
+    void Interact()
+    {
         //Checking for any nearby interactables
         Collider2D col2 = Physics2D.OverlapCircle(transform.position, interactRadius, interactableLayer);
 
@@ -278,124 +332,100 @@ public class PlayerMechanics : MonoBehaviour
                 RemoveFocus();
             }
         }
+    }
 
-//-----------------------------------------------------------------
-    //ADD SAVE AND LOAD ICONS/TEXT
-        if(control.save)
+    //Range of attack depends on power used
+    void Attack()
+    {
+        timeSinceAttack += Time.deltaTime;
+
+        if(control.attack1 && !control.crouch && timeSinceAttack >= attackDelay)
         {
-            Scene scene = SceneManager.GetActiveScene();
-            Game.current.currentPlayerData.sceneID = scene.buildIndex;
-            Game.current.currentPlayerData.playerPosX = transform.position.x;
-            Game.current.currentPlayerData.playerPosY = transform.position.y;
-            Game.current.currentPlayerData.playerPosZ = transform.position.z;
-
-            Game.current.currentPlayerData.powers = powers;
-            Game.current.currentPlayerData.power1 = power1;
-            Game.current.currentPlayerData.power2 = power2;
-
-            SaveLoad.Save();
+            currentPower = power1;
+        }
+        else if(control.attack2 && !control.crouch && timeSinceAttack >= attackDelay)
+        {
+            currentPower = power2;
+        }
+        else
+        {
+            anim.SetBool("isAttacking", false);
+            return;
         }
 
-//-----------------------------------------------------------------
+        timeSinceAttack = 0;
+        anim.SetBool("isAttacking", true);  //CHANGE TO SPECIFIC POWER ANIMATION
+        RaycastHit2D[] hits;
 
-        if(control.load)
+        if(flipCol) //If facing right
         {
-            SaveLoad.Load();
-            Game.current.isSceneBeingLoaded = true;
-            int whichScene = Game.current.currentPlayerData.sceneID;
-            SceneManager.LoadScene(whichScene);
-
-            float t_x = Game.current.currentPlayerData.playerPosX;
-            float t_y = Game.current.currentPlayerData.playerPosY;
-            float t_z = Game.current.currentPlayerData.playerPosZ;
-
-            transform.position = new Vector3(t_x, t_y, t_z);
-
-            powers = Game.current.currentPlayerData.powers;
-            power1 = Game.current.currentPlayerData.power1;
-            power2 = Game.current.currentPlayerData.power2;
+            //hit = Physics2D.Raycast(transform.position, transform.right, hitRange, enemyLayer);
+            hits = Physics2D.RaycastAll(transform.position, transform.right, powerStats[power][1], enemyLayer);
+        }
+        else //If facing left
+        {
+            //hit = Physics2D.Raycast(transform.position, -transform.right, hitRange, enemyLayer);
+            hits = Physics2D.RaycastAll(transform.position, -transform.right, powerStats[power][1], enemyLayer);
         }
 
-//-----------------------------------------------------------------
+        if(hits.Length > 0)
+        {
+          for(int i = 0; i < hits.Length; i++)
+          {
+              hit.transform.gameObject.SendMessage("TakeDamage", powerStats[currentPower][0]);
+              //hit.transform.gameObject.SendMessage("Knockback", 200);
+              hit.transform.gameObject.SendMessage("Knockback", powerStats[currentPower][2]);
+          }
+        }
+    }
 
+    void Inventory()
+    {
         //Toggles inventory screen when its button is pressed
         if(control.inventory)
         {
             inventoryMenu.GetComponent<InventoryMechanics>().ToggleInvMenu();
         }
-
-//-----------------------------------------------------------------
-
-
     }
 
-    /*void OnCollisionStay2D(Collision2D collision)
+    void SavenLoad()
     {
-        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Puddle")
-        {
-            groundCheck = true;
-        }
-    }*/
+      //-----------------------------------------------------------------
+      //ADD SAVE AND LOAD ICONS/TEXT
+          if(control.save)
+          {
+              Scene scene = SceneManager.GetActiveScene();
+              Game.current.currentPlayerData.sceneID = scene.buildIndex;
+              Game.current.currentPlayerData.playerPosX = transform.position.x;
+              Game.current.currentPlayerData.playerPosY = transform.position.y;
+              Game.current.currentPlayerData.playerPosZ = transform.position.z;
 
-//-----------------------------------------------------------------
-    //Remove this into appropriate file
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if(other.gameObject.tag == "Spikes")
-        {
-            //Adds a knockback to player if steps on spikes
-            rb.AddForce(new Vector2(rb.velocity.x*-100, rb.velocity.y*-100));
-            //rb.AddForce(new Vector2(, rb.velocity.y));
-        }
-    }
+              Game.current.currentPlayerData.powers = powers;
+              Game.current.currentPlayerData.power1 = power1;
+              Game.current.currentPlayerData.power2 = power2;
 
-    //Flips sprite depending on direction player is facing
-    void FlipSprite()
-    {
-        if (control.xMove < 0) //If moving left
-        {
-            playerSprite.flipX = true;
+              SaveLoad.Save();
+          }
 
-            if(flipCol)
-            {
-                pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
-                flipCol = false;
-            }
-        }
-        else if (control.xMove > 0) //If moving right
-        {
-            playerSprite.flipX = false;
+          //-----------------------------------------------------------------
 
-            if(!flipCol)
-            {
-                pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
-                flipCol = true;
-            }
-        }
-    }
+          if(control.load)
+          {
+              SaveLoad.Load();
+              Game.current.isSceneBeingLoaded = true;
+              int whichScene = Game.current.currentPlayerData.sceneID;
+              SceneManager.LoadScene(whichScene);
 
-    //Range of attack depends on power used
-    void Attack(string power)
-    {
-        RaycastHit2D hit;
+              float t_x = Game.current.currentPlayerData.playerPosX;
+              float t_y = Game.current.currentPlayerData.playerPosY;
+              float t_z = Game.current.currentPlayerData.playerPosZ;
 
-        if(flipCol) //If facing right
-        {
-            //hit = Physics2D.Raycast(transform.position, transform.right, hitRange, enemyLayer);
-            hit = Physics2D.Raycast(transform.position, transform.right, powerStats[power][1], enemyLayer);
-        }
-        else //If facing left
-        {
-            //hit = Physics2D.Raycast(transform.position, -transform.right, hitRange, enemyLayer);
-            hit = Physics2D.Raycast(transform.position, transform.right, powerStats[power][1], enemyLayer);
-        }
+              transform.position = new Vector3(t_x, t_y, t_z);
 
-        if(hit.collider != null)
-        {
-            hit.transform.gameObject.SendMessage("TakeDamage", powerStats[power][0]);
-            //hit.transform.gameObject.SendMessage("Knockback", 200);
-            hit.transform.gameObject.SendMessage("Knockback", powerStats[power][2]);
-        }
+              powers = Game.current.currentPlayerData.powers;
+              power1 = Game.current.currentPlayerData.power1;
+              power2 = Game.current.currentPlayerData.power2;
+          }
     }
 
     //Change camera focus to interactable

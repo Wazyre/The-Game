@@ -1,5 +1,5 @@
 sceneSetups:
-- path: C:/Users/Aziz/Desktop/level0/Assets/Scene/level0.unity
+- path: Assets/Scenes/FirstScene.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

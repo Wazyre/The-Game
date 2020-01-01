@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class PlayerControlMapping : MonoBehaviour
 {
     public float m_xMove; //Horizontal movement
