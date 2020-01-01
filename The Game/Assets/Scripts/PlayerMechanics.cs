@@ -359,7 +359,7 @@ public class PlayerMechanics : MonoBehaviour
         }
     }
 
-    void Inventory()
+    void Inventory() 
     {
         //Toggles inventory screen when its button is pressed
         if(control.inventory)
