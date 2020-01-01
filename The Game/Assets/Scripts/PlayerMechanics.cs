@@ -7,36 +7,38 @@ using UnityEngine.SceneManagement;
 using System;
 
 [System.Serializable]
-public class PlayerMechanics : PlayerControlMapping
+public class PlayerMechanics : MonoBehaviour
 {
-    //float hMove;
     //Speeds and jump strengths of player
     [Header("Vertical Movement")]
-    [SerializeField] float bigJumpSpeede = 200f;
-    [SerializeField] float smallJumpSpeed = 50f;
-    [SerializeField] float fallingSpeed = 50f;
+    [SerializeField] float bigJumpSpeed = 200f;
+    [SerializeField] float smallJumpMod = 2f;
+    [SerializeField] float fallingMod = 2.5f;
     [SerializeField] bool inAir = false;
 
-    //float runningSpeed = 15f;
+    [Space]
+
     [Header("Horizontal Movement")]
     [SerializeField] float normalSpeed = 15f;
+    [SerializeField] float dashingSpeed = 25f;
     [SerializeField] float crouchingMod = 0.5f;
     [SerializeField] float dashDelay = 0.5f; //Delay between each dash
     [SerializeField] float currentSpeed;
     [SerializeField] bool crouching = false;
 
+    [Space]
+
+    [Header("Booleans")]
+    bool onGround;
+    bool wallGrab;
+    bool wallJumped;
+    bool isDashing;
+    bool hasDashed;
+
+    [Space]
+
     //float hitRange = 2f;
     float tempVelocity;
-
-    float interactRadius = 15f;
-
-    //Check conditions of player
-    [Header("Ground Check")]
-    [SerializeField] bool grounded = true;
-    [SerializeField] float groundCheckY = 0.11f; //Distane to check for ground
-    [SerializeField] float groundCheckX = 1f;
-    [SerializeField] Transform groundTransform
-    [SerializeField] LayerMask groundLayer
 
     bool flipCol = true; //True if facing right, false if facing left
 
@@ -66,8 +68,6 @@ public class PlayerMechanics : PlayerControlMapping
     Animator anim;  //Player's animator
     Rigidbody2D rb; //Player's rigidbody
     SpriteRenderer playerSprite;
-    LayerMask enemyLayer;
-    LayerMask interactableLayer;
 
     Text interactText;
 
@@ -75,7 +75,13 @@ public class PlayerMechanics : PlayerControlMapping
 
     PlayerControlMapping control;
     CameraFollow camFol;
+    PlayerCollisions collisions;
     public Interactable focus;
+    LayerMask interactableLayer;
+    float interactRadius = 15f;
+
+    LayerMask enemyLayer;
+
 
     void Awake()
     {
@@ -88,6 +94,7 @@ public class PlayerMechanics : PlayerControlMapping
       pCol = GetComponent<BoxCollider2D>();
       playerSprite = GetComponent<SpriteRenderer>();
       control = GetComponent<PlayerControlMapping>();
+      collisions = GetComponent<PlayerCollisions>();
 
       rb.freezeRotation = true; //Prevents sprite from flipping
     }
@@ -95,21 +102,17 @@ public class PlayerMechanics : PlayerControlMapping
     // Start is called before the first frame update
     void Start()
     {
-        //player = this.gameObject;
-        groundTransform = transform.Find("groundTransform");
         currentSpeed = normalSpeed;
         control.StartInput();
-        groundLayer = LayerMask.GetMask("Ground");
-        enemyLayer = LayerMask.GetMask("Enemy");
-        interactableLayer = LayerMask.GetMask("Interactable");
         interactText.gameObject.SetActive(false);
+        interactableLayer = LayerMask.GetMask("Interactable");
+        enemyLayer = LayerMask.GetMask("Enemy");
     }
 
     // Update is called once per frame
     void Update()
     {
         FlipSprite();
-        isGrounded();
         Walk();
         Run();
         Jump();
@@ -118,29 +121,9 @@ public class PlayerMechanics : PlayerControlMapping
         Attack();
         Inventory();
         SavenLoad();
-
     }
-
-    /*void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Puddle")
-        {
-            groundTransform = true;
-        }
-    }*/
 
 //-----------------------------------------------------------------
-    //Remove this into appropriate file
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if(other.gameObject.tag == "Spikes")
-        {
-            //Adds a knockback to player if steps on spikes
-            rb.AddForce(new Vector2(rb.velocity.x*-100, rb.velocity.y*-100));
-            //rb.AddForce(new Vector2(, rb.velocity.y));
-        }
-    }
-
     //Flips sprite depending on direction player is facing
     void FlipSprite()
     {
@@ -163,19 +146,6 @@ public class PlayerMechanics : PlayerControlMapping
                 pCol.offset = new Vector2(-pCol.offset.x, pCol.offset.y);
                 flipCol = true;
             }
-        }
-    }
-
-    void isGrounded()
-    {
-        RaycastHit2D ground = Physics2D.Raycast(groundTransform.position, -transform.up, groundCheckY, groundLayer);
-
-        if(ground) //If the player is standing on ground
-        {
-            grounded = true;
-            inAir = false;
-            anim.SetBool("isJumping", false);
-            //anim.SetBool("isIdle", true);
         }
     }
 
@@ -224,6 +194,16 @@ public class PlayerMechanics : PlayerControlMapping
 
     void Jump()
     {
+
+        if(rb.velocity.y < 0)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallingMod - 1) * Time.deltaTime;
+        }
+        else if(rb.velocity.y > 0 && !control.jumpOn)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (smallJumpMod - 1) * Time.deltaTime;
+        }
+        /*
         //Animation and forces for first jump
         if(control.jumpOn && grounded)
         {
@@ -231,7 +211,7 @@ public class PlayerMechanics : PlayerControlMapping
             {
                 inAir = true;
                 grounded = false;
-                rb.AddForce(new Vector2(0, bigJumpForce));
+                rb.velocity += new Vector2(0, bigJumpForce);
                 anim.SetBool("isJumping", true);
                 anim.SetBool("isIdle", false);
                 anim.SetBool("isRunning", false);
@@ -242,7 +222,7 @@ public class PlayerMechanics : PlayerControlMapping
         else if(control.jumpOn && inAir)
         {
             inAir = false;
-            rb.AddForce(new Vector2(0, smallJumpForce));
+            rb.velocity += new Vector2(0, smallJumpForce);
             anim.SetBool("isJumping", true);
             anim.SetBool("isIdle", false);
             anim.SetBool("isRunning", false);
@@ -269,7 +249,7 @@ public class PlayerMechanics : PlayerControlMapping
         }
 
         //Carries velocity to compare vertical distnace when jumping
-        tempVelocity = rb.velocity.y;
+        tempVelocity = rb.velocity.y;*/
     }
 
     void Crouch()
@@ -290,7 +270,7 @@ public class PlayerMechanics : PlayerControlMapping
 
         if(anim.GetBool("isCrouching"))
         {
-            rb.velocity *= crouchingSpeed; //Change speed to crouching speed
+            rb.velocity *= crouchingMod; //Change speed to crouching speed
         }
     }
 
@@ -360,21 +340,21 @@ public class PlayerMechanics : PlayerControlMapping
         if(flipCol) //If facing right
         {
             //hit = Physics2D.Raycast(transform.position, transform.right, hitRange, enemyLayer);
-            hits = Physics2D.RaycastAll(transform.position, transform.right, powerStats[power][1], enemyLayer);
+            hits = Physics2D.RaycastAll(transform.position, transform.right, powerStats[currentPower][1], enemyLayer);
         }
         else //If facing left
         {
             //hit = Physics2D.Raycast(transform.position, -transform.right, hitRange, enemyLayer);
-            hits = Physics2D.RaycastAll(transform.position, -transform.right, powerStats[power][1], enemyLayer);
+            hits = Physics2D.RaycastAll(transform.position, -transform.right, powerStats[currentPower][1], enemyLayer);
         }
 
         if(hits.Length > 0)
         {
           for(int i = 0; i < hits.Length; i++)
           {
-              hit.transform.gameObject.SendMessage("TakeDamage", powerStats[currentPower][0]);
+              hits[i].transform.gameObject.SendMessage("TakeDamage", powerStats[currentPower][0]);
               //hit.transform.gameObject.SendMessage("Knockback", 200);
-              hit.transform.gameObject.SendMessage("Knockback", powerStats[currentPower][2]);
+              hits[i].transform.gameObject.SendMessage("Knockback", powerStats[currentPower][2]);
           }
         }
     }
